@@ -2,7 +2,7 @@
 
 ## Контекст
 
-- Планы: ~/Github/DS-strategy/current/
+- Планы: ~/Documents/IWE/DS-strategy/current/
 
 ## Алгоритм
 

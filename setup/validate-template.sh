@@ -10,7 +10,7 @@
 
 set -euo pipefail
 
-TEMPLATE_DIR="${1:-$HOME/Github/FMT-exocortex-template}"
+TEMPLATE_DIR="${1:-$HOME/Documents/IWE/FMT-exocortex-template}"
 FAIL=0
 
 echo "=== Validating: $TEMPLATE_DIR ==="

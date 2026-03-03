@@ -3,28 +3,29 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.strategist.morning</string>
+    <string>com.strategist.update-reminder</string>
 
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>/Users/ds/Documents/IWE/FMT-exocortex-template/roles/strategist/scripts/strategist.sh</string>
-        <string>morning</string>
+        <string>/Users/ds/bin/update-reminder.sh</string>
     </array>
 
     <key>StartCalendarInterval</key>
     <dict>
+        <key>Weekday</key>
+        <integer>1</integer>
         <key>Hour</key>
-        <integer>6</integer>
+        <integer>7</integer>
         <key>Minute</key>
         <integer>0</integer>
     </dict>
 
     <key>StandardOutPath</key>
-    <string>/Users/ds/logs/strategist/launchd-morning.log</string>
+    <string>/Users/ds/logs/strategist/launchd-update-reminder.log</string>
 
     <key>StandardErrorPath</key>
-    <string>/Users/ds/logs/strategist/launchd-morning-error.log</string>
+    <string>/Users/ds/logs/strategist/launchd-update-reminder-error.log</string>
 
     <key>EnvironmentVariables</key>
     <dict>
@@ -35,6 +36,6 @@
     </dict>
 
     <key>RunAtLoad</key>
-    <true/>
+    <false/>
 </dict>
 </plist>

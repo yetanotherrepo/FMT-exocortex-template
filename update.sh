@@ -14,11 +14,11 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # Если скрипт в fork-е экзокортекса (FMT-exocortex)
 if [ -f "$SCRIPT_DIR/CLAUDE.md" ] && [ -d "$SCRIPT_DIR/memory" ]; then
     EXOCORTEX_DIR="$SCRIPT_DIR"
-elif [ -d "$HOME/Github/FMT-exocortex" ]; then
-    EXOCORTEX_DIR="$HOME/Github/FMT-exocortex"
+elif [ -d "$HOME/Documents/IWE/FMT-exocortex-template" ]; then
+    EXOCORTEX_DIR="$HOME/Documents/IWE/FMT-exocortex-template"
 else
     echo "ERROR: Cannot find exocortex directory."
-    echo "Run this script from your exocortex fork root or ~/Github/FMT-exocortex/"
+    echo "Run this script from your exocortex fork root or ~/Documents/IWE/FMT-exocortex-template/"
     exit 1
 fi
 
@@ -39,8 +39,23 @@ echo ""
 
 cd "$EXOCORTEX_DIR"
 
+# --- 0. Update Base repositories (FPF, etc.) ---
+echo "[0/5] Updating Base repositories..."
+update_base_repo() {
+    local name="$1"
+    local dir="$2"
+    if [ -d "$dir/.git" ]; then
+        echo "  $name: pulling..."
+        git -C "$dir" pull --rebase 2>&1 | sed 's/^/    /' || echo "  WARN: $name pull failed"
+    else
+        echo "  $name: not found at $dir (skip)"
+    fi
+}
+update_base_repo "FPF" "$WORKSPACE_DIR/FPF"
+echo ""
+
 # --- 1. Fetch upstream ---
-echo "[1/4] Fetching upstream..."
+echo "[1/5] Fetching upstream..."
 if ! git remote | grep -q upstream; then
     echo "  Adding upstream remote..."
     git remote add upstream https://github.com/TserenTserenov/FMT-exocortex-template.git
@@ -81,7 +96,7 @@ if $DRY_RUN; then
 fi
 
 # --- 3. Merge upstream ---
-echo "[2/4] Merging upstream..."
+echo "[2/5] Merging upstream..."
 
 # Stash local changes if any
 STASHED=false

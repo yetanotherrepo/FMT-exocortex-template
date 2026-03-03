@@ -22,10 +22,10 @@
 
 ### WORKPLAN.md — Hub-and-Spoke
 
-Каждый репозиторий в `~/Github/` содержит `WORKPLAN.md` в корне с текущими РП.
+Каждый репозиторий в `~/Documents/IWE/` содержит `WORKPLAN.md` в корне с текущими РП.
 
 **Агрегация:** При создании плана дня/недели Стратег:
-1. Обходит все `~/Github/*/WORKPLAN.md`
+1. Обходит все `~/Documents/IWE/*/WORKPLAN.md`
 2. Собирает РП со статусом pending/in-progress
 3. Формирует агрегированный план в `current/`
 
@@ -38,16 +38,16 @@
 **КРИТИЧЕСКИ ВАЖНО:** При сборе коммитов ВСЕГДА проверять ВСЕ репозитории:
 
 ```bash
-for repo in $(ls ~/Github/); do
-  if [ -d ~/Github/$repo/.git ]; then
-    echo "=== $repo ===" && cd ~/Github/$repo && git log --oneline --since="1 week ago" 2>/dev/null
+for repo in $(ls ~/Documents/IWE/); do
+  if [ -d ~/Documents/IWE/$repo/.git ]; then
+    echo "=== $repo ===" && cd ~/Documents/IWE/$repo && git log --oneline --since="1 week ago" 2>/dev/null
   fi
 done
 ```
 
 ## Work-Product Gate (правило РП-шлюза)
 
-> **Полное описание:** `~/Github/CLAUDE.md` секция 2.
+> **Полное описание:** `~/Documents/IWE/CLAUDE.md` секция 2.
 
 **БЛОКИРУЮЩЕЕ ПРАВИЛО.** Выполняется ДО ЛЮБОГО действия по задаче.
 
