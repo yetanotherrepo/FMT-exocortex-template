@@ -4,12 +4,12 @@
 
 ## Контекст
 
-- **HUB (личные планы):** {{WORKSPACE_DIR}}/DS-strategy/current/
-- **Документы стратегии:** {{WORKSPACE_DIR}}/DS-strategy/docs/ (ВСЕ файлы: Strategy.md, Dissatisfactions.md, Session Agenda.md)
-- **Inbox:** {{WORKSPACE_DIR}}/DS-strategy/inbox/ ([fleeting-notes.md](https://github.com/{{GITHUB_USER}}/DS-strategy/blob/main/inbox/fleeting-notes.md) + свежие файлы за неделю)
-- **SPOKE (планы репо):** {{WORKSPACE_DIR}}/*/WORKPLAN.md
-- **Стратегические карты:** {{WORKSPACE_DIR}}/*/MAPSTRATEGIC.md (если есть в репо)
-- **MEMORY:** ~/.claude/projects/{{CLAUDE_PROJECT_SLUG}}/memory/MEMORY.md
+- **HUB (личные планы):** /Users/ds/Documents/IWE/DS-strategy/current/
+- **Документы стратегии:** /Users/ds/Documents/IWE/DS-strategy/docs/ (ВСЕ файлы: Strategy.md, Dissatisfactions.md, Session Agenda.md)
+- **Inbox:** /Users/ds/Documents/IWE/DS-strategy/inbox/ ([fleeting-notes.md](https://github.com/yetanotherrepo/DS-strategy/blob/main/inbox/fleeting-notes.md) + свежие файлы за неделю)
+- **SPOKE (планы репо):** /Users/ds/Documents/IWE/*/WORKPLAN.md
+- **Стратегические карты:** /Users/ds/Documents/IWE/*/MAPSTRATEGIC.md (если есть в репо)
+- **MEMORY:** ~/.claude/projects/-Users-ds-Documents-IWE/memory/MEMORY.md
 
 ## Именование файлов в current/
 
@@ -76,16 +76,42 @@ DS-strategy/
 #### 4. Сверка со стратегией + агрегация MAPSTRATEGIC (→ блок «Стратегическая сверка»)
 
 - Прочитай `DS-strategy/docs/Strategy.md` — фокусы года, Q1 цели, приоритеты месяца
-- Прочитай `{{WORKSPACE_DIR}}/*/MAPSTRATEGIC.md` (если файл есть в репо)
+- Прочитай `/Users/ds/Documents/IWE/*/MAPSTRATEGIC.md` (если файл есть в репо)
 - **MCP-контекст:** `knowledge-mcp search("текущий фокус обучения", source_type="guides")` → рекомендации по руководствам для плана недели
 - **Агрегируй** фазы из MAPSTRATEGIC.md → обнови секцию «Текущие фазы (MAPSTRATEGIC)» в Strategy.md
 - Обнови «Приоритеты месяца» — статусы на основе WeekReport
 - Проверь: соответствуют ли текущие РП стратегическому направлению?
 - Отметь расхождения (РП без привязки к стратегии, или стратегия без РП)
 
+#### 4.5. Google Calendar — встречи на неделю
+
+> Читает события через MCP (`gcal_list_events`). Цель: учесть занятое время при составлении WeekPlan + связать встречи с РП.
+
+1. Вызови `gcal_list_events` с параметрами: пн текущей недели 00:00 – вс 23:59 (ISO 8601, UTC)
+2. Для каждого события:
+   - Определи день и продолжительность
+   - Сопоставь с РП из carry-over / стратегических приоритетов
+   - Встречи без РП — предложи связать или создать РП
+3. Рассчитай занятое время по дням → учти при распределении бюджета в WeekPlan
+4. Включи секцию `📅 Встречи недели` в WeekPlan после заголовка
+
+**Формат секции:**
+
+```markdown
+## 📅 Встречи недели W{N}
+
+| Дата | Встреча | Длительность | Связь с РП |
+|------|---------|--------------|------------|
+| Пн DD мар | Название | Xч | #N / предлагаю связать с #N / — |
+
+**Итого занято:** Xh → **Доступно для задач:** ~Yh (из бюджета Nh)
+```
+
+> Нет встреч на неделю — секцию не создавать.
+
 #### 5. Обход WORKPLAN.md (Hub-and-Spoke)
 
-- Прочитай `{{WORKSPACE_DIR}}/*/WORKPLAN.md` из каждого репо
+- Прочитай `/Users/ds/Documents/IWE/*/WORKPLAN.md` из каждого репо
 - Собери все РП со статусом pending/in-progress
 - Выяви расхождения с HUB-планом
 
