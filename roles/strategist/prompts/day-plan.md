@@ -4,8 +4,8 @@
 
 ## Контекст
 
-- **HUB (личные планы):** /Users/ds/Documents/IWE/DS-strategy/current/
-- **SPOKE (планы репо):** /Users/ds/Documents/IWE/*/WORKPLAN.md
+- **HUB (личные планы):** ~/Documents/IWE/DS-strategy/current/
+- **SPOKE (планы репо):** ~/Documents/IWE/*/WORKPLAN.md
 - **MEMORY:** ~/.claude/projects/-Users-ds-Documents-IWE/memory/MEMORY.md
 
 ## Именование файлов в current/
@@ -36,11 +36,11 @@ DS-strategy/
 **Стратег ОБЯЗАН** собрать коммиты за вчерашний день самостоятельно:
 
 ```bash
-# Для КАЖДОГО репо в /Users/ds/Documents/IWE/:
-git -C /Users/ds/Documents/IWE/<repo> log --since="yesterday 00:00" --until="today 00:00" --oneline --no-merges
+# Для КАЖДОГО репо в ~/Documents/IWE/:
+git -C ~/Documents/IWE/<repo> log --since="yesterday 00:00" --until="today 00:00" --oneline --no-merges
 ```
 
-- Пройди по ВСЕМ репозиториям в `/Users/ds/Documents/IWE/`
+- Пройди по ВСЕМ репозиториям в `~/Documents/IWE/`
 - Сгруппируй коммиты по репозиториям
 - Сопоставь коммиты с РП из недельного плана
 - Определи статус каждого затронутого РП: done / partial / not started

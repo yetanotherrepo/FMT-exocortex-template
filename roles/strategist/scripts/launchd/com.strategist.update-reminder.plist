@@ -8,7 +8,7 @@
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>/Users/ds/bin/update-reminder.sh</string>
+        <string>__USER_HOME__/bin/update-reminder.sh</string>
     </array>
 
     <key>StartCalendarInterval</key>
@@ -22,17 +22,17 @@
     </dict>
 
     <key>StandardOutPath</key>
-    <string>/Users/ds/logs/strategist/launchd-update-reminder.log</string>
+    <string>__USER_HOME__/logs/strategist/launchd-update-reminder.log</string>
 
     <key>StandardErrorPath</key>
-    <string>/Users/ds/logs/strategist/launchd-update-reminder-error.log</string>
+    <string>__USER_HOME__/logs/strategist/launchd-update-reminder-error.log</string>
 
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>
         <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin</string>
         <key>HOME</key>
-        <string>/Users/ds</string>
+        <string>__USER_HOME__</string>
     </dict>
 
     <key>RunAtLoad</key>

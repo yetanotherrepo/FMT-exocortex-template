@@ -8,7 +8,7 @@
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>/Users/ds/Documents/IWE/FMT-exocortex-template/roles/strategist/scripts/strategist.sh</string>
+        <string>__IWE_WORKSPACE__/DS-strategy/roles/strategist/scripts/strategist.sh</string>
         <string>note-review</string>
     </array>
 
@@ -21,17 +21,17 @@
     </dict>
 
     <key>StandardOutPath</key>
-    <string>/Users/ds/logs/strategist/launchd-note-review.log</string>
+    <string>__USER_HOME__/logs/strategist/launchd-note-review.log</string>
 
     <key>StandardErrorPath</key>
-    <string>/Users/ds/logs/strategist/launchd-note-review-error.log</string>
+    <string>__USER_HOME__/logs/strategist/launchd-note-review-error.log</string>
 
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>
         <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin</string>
         <key>HOME</key>
-        <string>/Users/ds</string>
+        <string>__USER_HOME__</string>
     </dict>
 </dict>
 </plist>

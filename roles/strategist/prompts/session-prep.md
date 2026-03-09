@@ -4,11 +4,11 @@
 
 ## Контекст
 
-- **HUB (личные планы):** /Users/ds/Documents/IWE/DS-strategy/current/
-- **Документы стратегии:** /Users/ds/Documents/IWE/DS-strategy/docs/ (ВСЕ файлы: Strategy.md, Dissatisfactions.md, Session Agenda.md)
-- **Inbox:** /Users/ds/Documents/IWE/DS-strategy/inbox/ ([fleeting-notes.md](https://github.com/yetanotherrepo/DS-strategy/blob/main/inbox/fleeting-notes.md) + свежие файлы за неделю)
-- **SPOKE (планы репо):** /Users/ds/Documents/IWE/*/WORKPLAN.md
-- **Стратегические карты:** /Users/ds/Documents/IWE/*/MAPSTRATEGIC.md (если есть в репо)
+- **HUB (личные планы):** ~/Documents/IWE/DS-strategy/current/
+- **Документы стратегии:** ~/Documents/IWE/DS-strategy/docs/ (ВСЕ файлы: Strategy.md, Dissatisfactions.md, Session Agenda.md)
+- **Inbox:** ~/Documents/IWE/DS-strategy/inbox/ ([fleeting-notes.md](https://github.com/yetanotherrepo/DS-strategy/blob/main/inbox/fleeting-notes.md) + свежие файлы за неделю)
+- **SPOKE (планы репо):** ~/Documents/IWE/*/WORKPLAN.md
+- **Стратегические карты:** ~/Documents/IWE/*/MAPSTRATEGIC.md (если есть в репо)
 - **MEMORY:** ~/.claude/projects/-Users-ds-Documents-IWE/memory/MEMORY.md
 
 ## Именование файлов в current/
@@ -76,7 +76,7 @@ DS-strategy/
 #### 4. Сверка со стратегией + агрегация MAPSTRATEGIC (→ блок «Стратегическая сверка»)
 
 - Прочитай `DS-strategy/docs/Strategy.md` — фокусы года, Q1 цели, приоритеты месяца
-- Прочитай `/Users/ds/Documents/IWE/*/MAPSTRATEGIC.md` (если файл есть в репо)
+- Прочитай `~/Documents/IWE/*/MAPSTRATEGIC.md` (если файл есть в репо)
 - **MCP-контекст:** `knowledge-mcp search("текущий фокус обучения", source_type="guides")` → рекомендации по руководствам для плана недели
 - **Агрегируй** фазы из MAPSTRATEGIC.md → обнови секцию «Текущие фазы (MAPSTRATEGIC)» в Strategy.md
 - Обнови «Приоритеты месяца» — статусы на основе WeekReport
@@ -111,7 +111,7 @@ DS-strategy/
 
 #### 5. Обход WORKPLAN.md (Hub-and-Spoke)
 
-- Прочитай `/Users/ds/Documents/IWE/*/WORKPLAN.md` из каждого репо
+- Прочитай `~/Documents/IWE/*/WORKPLAN.md` из каждого репо
 - Собери все РП со статусом pending/in-progress
 - Выяви расхождения с HUB-планом
 

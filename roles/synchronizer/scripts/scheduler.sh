@@ -16,7 +16,7 @@ STATE_DIR="$HOME/.local/state/exocortex"
 LOG_DIR="$HOME/logs/synchronizer"
 LOG_FILE="$LOG_DIR/scheduler-$(date +%Y-%m-%d).log"
 
-ROLES_DIR="/Users/ds/Documents/IWE/FMT-exocortex-template/roles"
+ROLES_DIR="$HOME/Documents/IWE/DS-strategy/roles"
 NOTIFY_SH="$SCRIPT_DIR/notify.sh"
 
 # Role runner discovery: reads runner path from role.yaml, fallback to convention
