@@ -7,11 +7,10 @@ set -e
 # Конфигурация
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
-IWE_DIR="$HOME/Documents/IWE"
-WORKSPACE="$IWE_DIR/DS-strategy"
+WORKSPACE="{{WORKSPACE_DIR}}/DS-strategy"
 PROMPTS_DIR="$REPO_DIR/prompts"
 LOG_DIR="$HOME/logs/strategist"
-CLAUDE_PATH="$HOME/.local/bin/claude"
+CLAUDE_PATH="{{CLAUDE_PATH}}"
 
 # AI CLI: переопределение через переменные окружения
 # По умолчанию: Claude Code. Примеры:
@@ -44,7 +43,7 @@ notify() {
 
 notify_telegram() {
     local scenario="$1"
-    "$IWE_DIR/DS-strategy/roles/synchronizer/scripts/notify.sh" strategist "$scenario" >> "$LOG_FILE" 2>&1 || true
+    "{{WORKSPACE_DIR}}/FMT-exocortex-template/roles/synchronizer/scripts/notify.sh" strategist "$scenario" >> "$LOG_FILE" 2>&1 || true
 }
 
 fetch_wakatime_data() {
@@ -172,7 +171,7 @@ case "$1" in
         log "Sunday: running week review"
         run_claude "week-review"
         # Fallback push for Knowledge Index (optional, skip if repo doesn't exist)
-        KI_REPO="$IWE_DIR/DS-Knowledge-Index-yetanotherrepo"
+        KI_REPO="{{WORKSPACE_DIR}}/DS-Knowledge-Index-{{GITHUB_USER}}"
         if [ -d "$KI_REPO/.git" ]; then
             if git -C "$KI_REPO" log --oneline -1 --since="1 hour ago" --grep="week-review" 2>/dev/null | grep -q .; then
                 git -C "$KI_REPO" push >> "$LOG_FILE" 2>&1 && log "Pushed Knowledge Index (fallback)" || log "WARN: KI push failed"

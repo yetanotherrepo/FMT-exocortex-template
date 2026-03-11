@@ -7,31 +7,30 @@
 
     <key>ProgramArguments</key>
     <array>
-        <string>/bin/bash</string>
-        <string>__IWE_WORKSPACE__/DS-strategy/roles/strategist/scripts/strategist.sh</string>
+        <string>{{WORKSPACE_DIR}}/FMT-exocortex-template/roles/strategist/scripts/strategist.sh</string>
         <string>morning</string>
     </array>
 
     <key>StartCalendarInterval</key>
     <dict>
         <key>Hour</key>
-        <integer>6</integer>
+        <integer>{{TIMEZONE_HOUR}}</integer>
         <key>Minute</key>
         <integer>0</integer>
     </dict>
 
     <key>StandardOutPath</key>
-    <string>__USER_HOME__/logs/strategist/launchd-morning.log</string>
+    <string>{{HOME_DIR}}/logs/strategist/launchd-morning.log</string>
 
     <key>StandardErrorPath</key>
-    <string>__USER_HOME__/logs/strategist/launchd-morning-error.log</string>
+    <string>{{HOME_DIR}}/logs/strategist/launchd-morning-error.log</string>
 
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>
         <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin</string>
         <key>HOME</key>
-        <string>__USER_HOME__</string>
+        <string>{{HOME_DIR}}</string>
     </dict>
 
     <key>RunAtLoad</key>

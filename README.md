@@ -1,35 +1,22 @@
-# Персональный экзокортекс
+# IWE — Intelligent Working Environment
 
-> Рабочее пространство для интеллектуальной работы и развития с ИИ-агентами.
+> Персональная среда для интеллектуальной работы и развития с ИИ-агентами.
 
 Ты проходишь курсы. Бот помогает каждый день. Но знания остаются в голове, планы — в заметках, а контекст теряется между сессиями.
 
-**Экзокортекс** — это твоё личное рабочее пространство, где Claude помогает планировать неделю, фиксировать знания и строить собственную базу. Он подключён к платформе: те же знания, тот же бот, но теперь ещё и личный стратег.
+**IWE** — это интеллектуальная рабочая среда, где Claude помогает планировать неделю, фиксировать знания и строить собственную базу. Как IDE объединяет редактор, компилятор и дебаггер в одну среду для программиста — так IWE объединяет знания, планирование и ИИ-агентов в одну среду для мышления.
 
-## Что ты получишь
+> **Ключевой принцип: экзоскелет, не протез.** IWE усиливает ваше мышление, а не заменяет его. После взаимодействия с IWE вы стали компетентнее, а не только получили результат.
 
-После установки у тебя будет работающая система из 5 компонентов:
+---
 
-| Компонент | Что делает |
-|-----------|-----------|
-| **CLAUDE.md** | Правила для Claude Code: как открывать сессию, как фиксировать знания, как закрывать. Claude помнит контекст между сессиями |
-| **memory/** | Оперативная память: текущие задачи, различения, чеклисты, SOTA-практики. Claude читает их в начале каждой сессии |
-| **MCP-серверы** | Доступ к базе знаний платформы: ~5400 документов, образовательные руководства, цифровой двойник. Claude ищет ответы в базе, а не угадывает |
-| **Стратег** | Роль (R1), запускается автоматически: утренний план дня, вечернее ревью, недельная сессия стратегирования |
-| **DS-strategy/** | Твой стратегический хаб: планы недель, отчёты, неудовлетворённости, входящие заметки |
+## Как это выглядит на практике
 
-**Как это выглядит на практике:**
-
-- Утром — получаешь план дня в Telegram (Стратег составил его ночью)
+- Утром — Стратег составил план ночью: уведомление в Telegram + файл DayPlan в репозитории
 - Открываешь VS Code → `claude` → Claude знает, что в плане, и предлагает начать с приоритетного
 - Работаешь — Claude фиксирует знания по ходу (Capture-to-Pack)
 - Закрываешь сессию — результат зафиксирован, план обновлён
 - В понедельник — Стратег готовит черновик недельного плана, вы обсуждаете его на сессии стратегирования
-
-> **Первая установка?** [SETUP-GUIDE.md](docs/SETUP-GUIDE.md) — пошаговое руководство от чистого компьютера (30-60 мин).
-> **Хочешь понять, что за этим стоит?** [LEARNING-PATH.md](docs/LEARNING-PATH.md) — полный путь изучения: принципы, протоколы, агенты, Pack, SOTA и где всё найти.
-> **Быстрая справка / FAQ:** [IWE-HELP.md](docs/IWE-HELP.md) — то же, что знает бот @aist_me_bot.
-> **Почему принципы, а не навыки?** [principles-vs-skills.md](docs/principles-vs-skills.md) — аргументация и генеративная иерархия.
 
 ---
 
@@ -43,57 +30,36 @@
 |-----------|:----:|:----:|-----------|-----------|
 | **ОС** | ✓ | ✓ | macOS, Linux, Windows (WSL) | — |
 | **Git** | ✓ | ✓ | `git --version` | macOS: `xcode-select --install` / Linux: `sudo apt install git` |
-| **AI CLI** | ✓ | ✓ | Любой: Claude Code, Codex, Aider и др. | См. таблицу совместимости ниже |
+| **AI CLI** | ✓ | ✓ | Любой: Claude Code, Codex, Aider и др. | См. [совместимость с AI CLI](#совместимость-с-ai-cli) |
 | **VS Code** | ✓ | ✓ | `code --version` | [code.visualstudio.com](https://code.visualstudio.com) |
 | GitHub CLI | — | ✓ | `gh --version` | macOS: `brew install gh` / Linux: [cli.github.com](https://cli.github.com/) |
 | GitHub аккаунт | — | ✓ | `gh auth status` | `gh auth login` |
 | Node.js | — | ✓ | `node --version` | Только если AI CLI = Claude Code |
 | WakaTime | — | — | `wakatime-cli --version` | Опционально. `/setup-wakatime` в Claude Code |
 
-### Совместимость с AI CLI
-
-Ядро экзокортекса (CLAUDE.md, memory/, промпты) — это markdown-файлы. Они работают с **любым** AI CLI, который умеет читать файлы в рабочей директории.
-
-| AI CLI | Интерактивная работа | Автоматизация (Стратег) | MCP-серверы | Примечание |
-|--------|:-------------------:|:----------------------:|:-----------:|------------|
-| **Claude Code** (рекомендуемый) | Полная | Полная | Да | Hooks, skills, settings. `npm install -g @anthropic-ai/claude-code` |
-| **Codex** (OpenAI) | Работает | Через `AI_CLI=codex` | Нет | `npm install -g @openai/codex` |
-| **Aider** | Работает | Через `AI_CLI=aider` | Нет | `pip install aider-chat`. Флаг: `AI_CLI_PROMPT_FLAG=--message` |
-| **Continue.dev** | Работает | Нет | Частично | VS Code extension. Нет CLI для автоматизации |
-| **Cursor** | Работает | Нет | Нет | Встроенный AI. Читает CLAUDE.md как project rules |
-
-> **Как переключить AI CLI для автоматизации Стратега:**
-> ```bash
-> # По умолчанию — Claude Code (ничего менять не нужно)
-> bash roles/strategist/scripts/strategist.sh morning
+> **Как открыть терминал:**
+> - **macOS:** Spotlight (`Cmd + Space`) → наберите `Terminal` → Enter.
+>   Или в VS Code: меню `Terminal` → `New Terminal` (`Ctrl + `` ` ``).
+> - **Windows:** `Win + R` → наберите `cmd` → Enter. Рекомендуется: WSL (Windows Subsystem for Linux) для полной совместимости.
+>   Или в VS Code: меню `Terminal` → `New Terminal` (`Ctrl + `` ` ``).
+> - **Альтернатива:** Откройте VS Code, запустите Claude Code командой `claude` в терминале VS Code, и попросите его выполнить нужную команду.
 >
-> # Codex
-> AI_CLI=codex AI_CLI_PROMPT_FLAG=-p AI_CLI_EXTRA_FLAGS="" bash roles/strategist/scripts/strategist.sh morning
->
-> # Aider
-> AI_CLI=aider AI_CLI_PROMPT_FLAG=--message AI_CLI_EXTRA_FLAGS="" bash roles/strategist/scripts/strategist.sh morning
-> ```
-
-> **WakaTime** трекает время работы: по проектам, категориям (AI Coding, Coding, Writing Docs), редакторам. Бесплатный план: статистика за 2 недели. Данные используются Стратегом в Week Review и Morning Check. **Настройка:** `/setup-wakatime` в Claude Code. Подробнее: [wakatime.com](https://wakatime.com).
-
-> **Автоматизация Стратега:** на macOS — launchd (устанавливается автоматически при полной установке). На Linux — настройте cron вручную (`crontab -e`). Без автоматизации всё работает — Стратег запускается вручную: `bash roles/strategist/scripts/strategist.sh morning`
+> Далее все команды выполняются в терминале.
 
 ### Шаг 0: Создать рабочую папку
 
-Создайте на своём компьютере **одну папку** для всех репозиториев — текущих и будущих. Все репозитории экзокортекса (шаблон, стратегия, Pack, проекты) должны находиться в одной общей папке. По умолчанию это `~/Github`:
+Создайте **одну папку** для всех репозиториев IWE. По умолчанию `~/IWE`:
 
 ```bash
-mkdir -p ~/Github
+mkdir -p ~/IWE
 ```
-
-> **Важно:** Эта папка — ваше рабочее пространство. В неё будут клонироваться все репозитории: `FMT-exocortex-template/`, `DS-strategy/`, `PACK-{область}/`, `DS-{проекты}/` и др. CLAUDE.md тоже будет лежать в корне этой папки. Название может быть любым (не обязательно `Github`), но все репо должны быть в одном месте — Claude Code ориентируется на эту структуру.
 
 ### Шаг 1: Клонировать и запустить установку
 
 **Вариант A: Полная установка (~5 мин)** — git + GitHub + Claude Code + автоматизация Стратега:
 
 ```bash
-cd ~/Github
+cd ~/IWE
 gh repo fork TserenTserenov/FMT-exocortex-template --clone --remote
 cd FMT-exocortex-template
 bash setup.sh
@@ -102,7 +68,7 @@ bash setup.sh
 **Вариант B: Минимальная установка (~2 мин)** — только git, без сети, любой AI CLI:
 
 ```bash
-cd ~/Github
+cd ~/IWE
 git clone https://github.com/TserenTserenov/FMT-exocortex-template.git
 cd FMT-exocortex-template
 bash setup.sh --core
@@ -117,33 +83,50 @@ bash setup.sh --core
 <summary>Что делает setup.sh</summary>
 
 1. Проверяет prerequisites (git, gh, claude)
-2. Заменяет 7 плейсхолдеров (`{{GITHUB_USER}}`, `{{WORKSPACE_DIR}}` и др.)
-3. Копирует `CLAUDE.md` → корень рабочей директории
-4. Копирует `memory/*.md` → `~/.claude/projects/.../memory/`
-5. Устанавливает launchd-агентов для Стратега
-6. Создаёт `DS-strategy/` — приватный репозиторий для стратегирования
+2. Показывает политику данных и запрашивает согласие ([DATA-POLICY.md](docs/DATA-POLICY.md))
+3. Заменяет 7 плейсхолдеров (`{{GITHUB_USER}}`, `{{WORKSPACE_DIR}}` и др.)
+4. Копирует `CLAUDE.md` → корень рабочей директории
+5. Копирует `memory/*.md` → `~/.claude/projects/.../memory/`
+6. Устанавливает launchd-агентов для Стратега
+7. Создаёт `DS-strategy/` — приватный репозиторий для стратегирования
 
 Посмотреть без выполнения: `bash setup.sh --dry-run`
+</details>
+
+<details>
+<summary>Ручная настройка (если setup.sh не подходит)</summary>
+
+1. Замените `{{GITHUB_USER}}` на ваш GitHub username во всех файлах
+2. Замените `{{WORKSPACE_DIR}}` на путь к рабочей директории (напр. `~/IWE`)
+3. Замените `{{HOME_DIR}}` на домашнюю директорию (значение `$HOME`)
+4. Замените `{{CLAUDE_PROJECT_SLUG}}` на путь через дефисы (напр. для `~/IWE` → `-Users-yourname-IWE`)
+5. Замените `{{TIMEZONE_HOUR}}` на час запуска стратега в UTC (напр. `4` для 7:00 MSK)
+6. Замените `{{TIMEZONE_DESC}}` на описание времени (напр. `7:00 MSK`)
+7. Замените `{{CLAUDE_PATH}}` на путь к Claude CLI (напр. `/opt/homebrew/bin/claude`)
+8. Установите launchd-агентов: `cd roles/strategist && bash install.sh`
+9. Скопируйте `memory/` в `~/.claude/projects/.../memory/`
+10. Скопируйте `CLAUDE.md` в корень рабочей директории
+
 </details>
 
 ### Шаг 2: Проверить установку
 
 ```bash
 # Проверить файлы
-ls ~/Github/CLAUDE.md
+ls ~/IWE/CLAUDE.md
 ls ~/.claude/projects/*/memory/
 
-# Проверить launchd
+# Проверить launchd (только macOS)
 launchctl list | grep strategist
 
 # Проверить DS-strategy
-ls ~/Github/DS-strategy/
+ls ~/IWE/DS-strategy/
 ```
 
 ### Шаг 3: Первая сессия (~30 мин)
 
 ```bash
-cd ~/Github
+cd ~/IWE
 claude
 ```
 
@@ -157,30 +140,14 @@ Claude прочитает CLAUDE.md и memory/ и проведёт тебя че
 
 После этого Claude в каждой сессии будет видеть твой план и работать по нему.
 
-<details>
-<summary>Ручная настройка (если setup.sh не подходит)</summary>
-
-1. Замените `{{GITHUB_USER}}` на ваш GitHub username во всех файлах
-2. Замените `{{WORKSPACE_DIR}}` на путь к рабочей директории (напр. `~/Github`)
-3. Замените `{{HOME_DIR}}` на домашнюю директорию (значение `$HOME`)
-4. Замените `{{CLAUDE_PROJECT_SLUG}}` на путь через дефисы (напр. для `~/Github` → `-Users-yourname-Github`)
-5. Замените `{{TIMEZONE_HOUR}}` на час запуска стратега в UTC (напр. `4` для 7:00 MSK)
-6. Замените `{{TIMEZONE_DESC}}` на описание времени (напр. `7:00 MSK`)
-7. Замените `{{CLAUDE_PATH}}` на путь к Claude CLI (напр. `/opt/homebrew/bin/claude`)
-8. Установите launchd-агентов: `cd roles/strategist && bash install.sh`
-9. Скопируйте `memory/` в `~/.claude/projects/.../memory/`
-10. Скопируйте `CLAUDE.md` в корень рабочей директории
-
-</details>
-
 ---
 
 ## Обновления
 
-Протоколы, промпты и справочники обновляются в upstream. Твои личные данные (планы, MEMORY.md, стратегия) **не затрагиваются**.
+Протоколы, промпты и справочники обновляются из upstream. Твои личные данные (планы, MEMORY.md, стратегия) **не затрагиваются**.
 
 ```bash
-cd ~/Github/FMT-exocortex-template
+cd ~/IWE/FMT-exocortex-template
 bash update.sh
 ```
 
@@ -195,168 +162,56 @@ bash update.sh
 
 ---
 
-## От шаблона к рабочему пространству
+## Совместимость с AI CLI
 
-### Что происходит при setup.sh
+Ядро IWE (CLAUDE.md, memory/, промпты) — это markdown-файлы. Они работают с **любым** AI CLI, который умеет читать файлы в рабочей директории.
 
-```
-FMT-exocortex-template/                    ~/Github/ (твоё рабочее пространство)
-│                                           │
-├── CLAUDE.md            ──── копия ────→   ├── CLAUDE.md
-├── memory/*.md          ──── копия ────→   ├── ~/.claude/projects/.../memory/
-│   └── MEMORY.md (скелет)                  │   └── MEMORY.md (★ твой, пустой)
-│                                           │
-├── roles/strategist/   ── install.sh ──→  ├── ~/Library/LaunchAgents/ (расписание)
-│                                           │
-├── seed/strategy/       ── создаёт репо ─→ ├── DS-strategy/ (★ отдельный приватный репо)
-│                                           │
-└── (остаётся как fork)                     ├── FMT-exocortex-template/ (НЕ трогать)
-                                            ├── PACK-{область}/ (когда создашь)
-                                            └── DS-{проекты}/ (когда создашь)
-```
+| AI CLI | Интерактивная работа | Автоматизация (Стратег) | MCP-серверы | Примечание |
+|--------|:-------------------:|:----------------------:|:-----------:|------------|
+| **Claude Code** (рекомендуемый) | Полная | Полная | Да | Hooks, skills, settings. `npm install -g @anthropic-ai/claude-code` |
+| **Codex** (OpenAI) | Работает | Через `AI_CLI=codex` | Нет | `npm install -g @openai/codex` |
+| **Aider** | Работает | Через `AI_CLI=aider` | Нет | `pip install aider-chat`. Флаг: `AI_CLI_PROMPT_FLAG=--message` |
+| **Continue.dev** | Работает | Нет | Частично | VS Code extension. Нет CLI для автоматизации |
+| **Cursor** | Работает | Нет | Нет | Встроенный AI. Читает CLAUDE.md как project rules |
 
-> **Ключевое:** `seed/strategy/` — заготовка. При setup она становится **отдельным приватным репозиторием** `DS-strategy/` на GitHub. После setup связь с seed/ разрывается — DS-strategy живёт своей жизнью.
-
-### Что даёт платформа (Standard)
-
-Через шаблон и обновления ты получаешь готовую методологию:
-
-| Компонент | Что это | Как обновляется |
-|-----------|---------|-----------------|
-| **Протоколы** | Open → Work → Close: как начинать, вести и закрывать сессию | `update.sh` |
-| **Память** | 9 файлов: различения, SOTA, чеклисты, навигация | `update.sh` |
-| **MCP-серверы** | 2 сервера знаний: knowledge-mcp (Pack + guides + DS), ddt (цифровой двойник) | `update.sh` (конфиг) |
-| **Стратег** | 9 сценариев: утренний план, недельный обзор, стратегирование и др. | `update.sh` |
-| **Инструменты** | WakaTime hook, Claude Code skills | `update.sh` |
-| **CLAUDE.md** | Правила для Claude Code: архитектура, процессы, gates | `update.sh` |
-
-### Что накапливается у тебя (Personal)
-
-Твои данные живут отдельно и **никогда не затрагиваются обновлениями**:
-
-| Данные | Где живут | Как растут |
-|--------|-----------|-----------|
-| **Планы** | `DS-strategy/current/` | Стратег создаёт WeekPlan и DayPlan |
-| **Контексты задач** | `DS-strategy/inbox/WP-*.md` | Claude фиксирует прогресс по задачам |
-| **Стратегия** | `DS-strategy/docs/Strategy.md` | Обновляется на стратегических сессиях |
-| **Задачи недели** | `MEMORY.md` | Claude обновляет таблицу РП каждую сессию |
-| **Знания** | `PACK-{область}/` | Экстрактор формализует captures в Pack-сущности |
-| **Проекты** | `DS-{проекты}/` | Ты создаёшь по мере роста |
-
-### Как работают обновления
-
-```
-Платформа (upstream)                     Ты (downstream)
-
-FMT-exocortex-template ──── update.sh ──→ Твой fork (git merge)
-(автор обновляет)              │
-                               ├──→ CLAUDE.md       → ~/Github/CLAUDE.md
-                               ├──→ memory/*.md     → ~/.claude/projects/.../
-                               │    (MEMORY.md НЕ трогается!)
-                               └──→ roles/prompts/ → остаются в fork
-
-DS-strategy/     ← НЕ затрагивается (отдельный репо)
-PACK-{область}/  ← НЕ затрагивается (твой репо)
-MEMORY.md        ← НЕ затрагивается (твои данные)
-```
-
----
-
-## Создание первого Pack
-
-Когда ты определишь область знаний, которую хочешь формализовать — создай свой первый Pack.
-
-### Когда создавать
-
-- Ты регулярно работаешь в одной области (управление проектами, ML, продуктовый дизайн...)
-- Тебе важно не терять знания между сессиями
-- Ты хочешь, чтобы Claude знал термины и паттерны твоей области
-
-### Как создать
+<details>
+<summary>Как переключить AI CLI для автоматизации Стратега</summary>
 
 ```bash
-# 1. Клонируй SPF (структура Pack, read-only reference)
-gh repo clone TserenTserenov/SPF ~/Github/SPF
+# По умолчанию — Claude Code (ничего менять не нужно)
+bash roles/strategist/scripts/strategist.sh morning
 
-# 2. Создай Pack из шаблона
-cp -r ~/Github/SPF/pack-template ~/Github/PACK-my-domain
-cd ~/Github/PACK-my-domain
-git init && git add -A && git commit -m "Initial Pack: my-domain"
-gh repo create PACK-my-domain --private --source=. --push
+# Codex
+AI_CLI=codex AI_CLI_PROMPT_FLAG=-p AI_CLI_EXTRA_FLAGS="" bash roles/strategist/scripts/strategist.sh morning
+
+# Aider
+AI_CLI=aider AI_CLI_PROMPT_FLAG=--message AI_CLI_EXTRA_FLAGS="" bash roles/strategist/scripts/strategist.sh morning
 ```
 
-Затем откройте Claude Code в этом репо — он прочитает шаблон и поможет заполнить:
-- `00-pack-manifest.md` — метаданные области
-- `01-domain-contract/` — границы, различения, онтология
-- `02-domain-entities/` — роли, объекты, методы
+</details>
 
-### Опциональные компоненты
+> **WakaTime** трекает время работы: по проектам, категориям, редакторам. Бесплатный план: статистика за 2 недели. **Настройка:** `/setup-wakatime` в Claude Code. Подробнее: [wakatime.com](https://wakatime.com).
 
-| Компонент | Когда добавлять | Что даёт |
-|-----------|----------------|----------|
-| **Экстрактор** | Создал первый Pack (10+ сущностей) | Автоматическое извлечение знаний из сессий в Pack |
-| **Синхронизатор** | Появилось 3+ репозитория | Кросс-репо синхронизация, code-scan, автоматические проекции |
-
-Принцип: минимальная сложность на старте, усложнение по мере роста.
+> **Автоматизация Стратега:** на macOS — launchd (устанавливается автоматически). На Linux — cron (`crontab -e`). Без автоматизации — Стратег запускается вручную: `bash roles/strategist/scripts/strategist.sh morning`
 
 ---
 
-## Путь на платформе
+## Документация
 
-Платформа растёт вместе с тобой. Каждый тир разблокирует новую функциональность.
-
-```
-T1: Старт  →  T2: Изучение  →  T3: Персонализация  →  T4: Созидание (IWE)  →  T5: Администрирование
-Бесплатно      БР                БР+                     БР++                    Владелец
-```
-
-| | T1: Старт | T2: Изучение | T3: Персонализация | T4: Созидание | T5: Администрирование |
-|---|---|---|---|---|---|
-| **Вход** | /start в боте (5 мин) | Подписка на программу | Заполнить Digital Twin (20 мин) | setup.sh (10 мин) | Владелец платформы |
-| **ИИ-роль** | Ассистент | Эксперт | Наставник | Со-мыслитель | Архитектор |
-| **Бот** | Марафон, Лента | + Руководства, Программы | + Персональные ответы | Всё из T3 + Claude Code | Всё из T4 |
-| **Рабочее пространство** | Только бот | Бот + контент | + Digital Twin | + Git + Claude Code + Стратег + WakaTime | + исходный код + деплой |
-| **Знания** | Поиск по базе | + полный доступ к гайдам | + персонализация | + свои Pack и DS | + управление standard/ |
-
----
-
-## Репозитории пользователя
-
-После установки и по мере роста у тебя появятся следующие репозитории:
-
-### Создаются автоматически (setup.sh)
-
-| Репо | Тип | Что это | Откуда |
-|------|-----|---------|--------|
-| **FMT-exocortex-template/** | Format | Твой форк шаблона экзокортекса (источник обновлений, CLAUDE.md, memory/, Стратег) | Fork от [FMT-exocortex-template](https://github.com/TserenTserenov/FMT-exocortex-template) |
-| **DS-strategy/** | Downstream/governance | Стратегический хаб: WeekPlan, DayPlan, inbox, стратегия, неудовлетворённости | Создаётся setup.sh из шаблона `seed/strategy/` |
-
-### Создаёшь сам (когда готов)
-
-| Репо | Тип | Когда создавать | Как |
-|------|-----|----------------|-----|
-| **PACK-{твоя-область}/** | Pack | Определил область знаний, которую хочешь формализовать | Из шаблона [SPF/pack-template](https://github.com/TserenTserenov/SPF) |
-| **DS-{твой-проект}/** | Downstream/instrument | Начал строить систему на основе Pack | `gh repo create DS-my-project --private` |
-
-### Клонируешь при необходимости (read-only reference)
-
-| Репо | Тип | Когда нужен | Ссылка |
-|------|-----|-------------|--------|
-| **SPF/** | Framework | Создаёшь первый Pack (нужен pack-template/) | [SPF](https://github.com/TserenTserenov/SPF) |
-| **FPF/** | Framework | Нужны первые принципы (редко, для углублённого изучения) | [FPF](https://github.com/TserenTserenov/FPF) |
-| **ZP/** | Foundation | Нулевые принципы (6 универсальных ограничений) | [ZP](https://github.com/TserenTserenov/ZP) |
-| **PACK-digital-platform/** | Pack | Живой пример Pack (40+ сущностей: роли, тиры, архитектура) | [PACK-digital-platform](https://github.com/TserenTserenov/PACK-digital-platform) |
-| **FMT-s2r/** | Format | Фреймворк для третьих принципов (S2R = System-to-Role) | [FMT-s2r](https://github.com/TserenTserenov/FMT-s2r) |
-| **DS-Knowledge-Index-{user}/** | Downstream/surface | Пример surface downstream: блог, посты, материалы | Создаётся пользователем |
-
-### Опциональные агенты (по мере роста)
-
-| Репо | Агент | Когда добавлять |
-|------|-------|----------------|
-| **DS-ai-systems/extractor/** | Экстрактор знаний | Первый Pack создан, 10+ сущностей. Автоматическое извлечение знаний из сессий |
-| **DS-ai-systems/synchronizer/** | Синхронизатор | 3+ репозитория. Кросс-репо синхронизация, code-scan, автоматические проекции |
-
-> **Принцип:** Начни с минимума (2 репо: FMT-exocortex-template + DS-strategy). Добавляй по мере роста. Не клонируй всё сразу.
+> **Первая установка?**
+> [SETUP-GUIDE.md](docs/SETUP-GUIDE.md) — пошаговое руководство от чистого компьютера (30-60 мин).
+>
+> **Политика данных:**
+> [DATA-POLICY.md](docs/DATA-POLICY.md) — какие данные собираются, где хранятся, как удалить.
+>
+> **Путь изучения:**
+> [LEARNING-PATH.md](docs/LEARNING-PATH.md) — принципы, протоколы, агенты, Pack, SOTA.
+>
+> **Быстрая справка / FAQ:**
+> [IWE-HELP.md](docs/IWE-HELP.md) — то же, что знает бот @aist_me_bot.
+>
+> **Почему принципы, а не навыки?**
+> [principles-vs-skills.md](docs/principles-vs-skills.md) — аргументация и генеративная иерархия.
 
 ---
 
@@ -366,9 +221,9 @@ T1: Старт  →  T2: Изучение  →  T3: Персонализация
 FMT-exocortex-template/
 │
 ├── CLAUDE.md                        # Правила для Claude Code (протоколы, архитектура)
-├── README.md                        # Быстрый старт (этот файл)
+├── README.md                        # Этот файл
 ├── REPO-TYPE.md                     # Тип репозитория (Format)
-├── ONTOLOGY.md                      # Онтология экзокортекса
+├── ONTOLOGY.md                      # Онтология IWE
 ├── update.sh                        # Обновление из upstream
 │
 ├── memory/                          # Оперативная память (≤10 файлов, ≤100 строк каждый)
@@ -384,91 +239,76 @@ FMT-exocortex-template/
 │   └── repo-type-rules.md           # Правила по типам репозиториев
 │
 ├── docs/                            # Справочная документация
-│   ├── SETUP-GUIDE.md               # Пошаговое руководство установки (от нуля)
+│   ├── SETUP-GUIDE.md               # Пошаговое руководство установки
+│   ├── LEARNING-PATH.md             # Путь изучения IWE
 │   ├── IWE-HELP.md                  # Справочник IWE для бота (FAQ, глоссарий)
-│   └── LEARNING-PATH.md             # Путь изучения: принципы, протоколы, SOTA
+│   ├── DATA-POLICY.md               # Политика данных IWE
+│   ├── principles-vs-skills.md      # Почему принципы, а не навыки
+│   └── adr/                         # Architecture Decision Records
 │
-├── roles/                          # Роли (точка расширения)
+├── roles/                           # Роли (точка расширения)
 │   ├── strategist/                  # Роль: Стратег (R1)
-│   │   ├── install.sh               # Установка launchd/cron
-│   │   ├── prompts/                 # 9 сценариев (day-plan, week-review...)
+│   │   ├── install.sh
+│   │   ├── prompts/                 # 9 сценариев
 │   │   └── scripts/                 # Скрипты запуска + launchd plist
 │   ├── extractor/                   # Роль: Экстрактор знаний (R2)
-│   │   ├── install.sh               # Установка launchd для inbox-check
-│   │   ├── prompts/                 # 4 сценария (session-close, on-demand, inbox-check, audit)
-│   │   ├── scripts/                 # Скрипт запуска + launchd plist
-│   │   └── config/                  # routing.md, feedback-log.md
 │   └── synchronizer/                # Роль: Синхронизатор (R8)
-│       ├── install.sh               # Установка центрального scheduler (launchd)
-│       ├── scripts/                 # scheduler, notify, code-scan, daily-report, sync-files
-│       │   └── templates/           # Шаблоны уведомлений по агентам
-│       └── config.yaml              # Расписание (reference)
 │
 ├── seed/                            # Шаблоны → отдельные репо после setup
 │   └── strategy/                    # → DS-strategy/ (стратегический хаб)
-│       ├── current/                 # Текущие планы и отчёты
-│       ├── archive/                 # Архив
-│       ├── inbox/                   # Входящие заметки
-│       ├── docs/                    # Стратегия, неудовлетворённости
-│       └── exocortex/              # Backup memory + CLAUDE.md
 │
 └── .claude/                         # Конфигурация Claude Code
-    ├── settings.local.json          # MCP-серверы + разрешения (авто-подключение к платформе)
-    ├── hooks/wakatime-heartbeat.sh  # WakaTime heartbeat для Claude Code
-    └── skills/setup-wakatime.md     # /setup-wakatime (автонастройка WakaTime)
+    ├── settings.local.json          # MCP-серверы + разрешения
+    ├── hooks/wakatime-heartbeat.sh  # WakaTime heartbeat
+    └── skills/setup-wakatime.md     # /setup-wakatime
 ```
-
-### Зоны
-
-| Зона | Что | update.sh | Пользователь |
-|------|-----|-----------|-------------|
-| **PLATFORM** | `memory/*.md` (кроме MEMORY.md), `roles/`, `docs/`, `.claude/` | Обновляет | Не трогает |
-| **PERSONAL** | `memory/MEMORY.md` | Не трогает | Редактирует каждую сессию |
-| **SEED** | `seed/strategy/` | N/A | После setup → отдельный репо DS-strategy/ |
-| **ROOT** | `CLAUDE.md`, `README.md`, `ONTOLOGY.md` | CLAUDE.md обновляет | Читает |
-
-> **Правило:** Platform-space обновляется из upstream (`update.sh`). User-space (MEMORY.md, DS-strategy/) — никогда.
-
----
-
-## Принципы
-
-1. **Standard vs Personal** — протоколы и промпты (standard) обновляются из upstream. Твои планы, память и стратегия (personal) — только у тебя
-2. **3-слойная память** — MEMORY.md (всегда в контексте, ≤100 строк) → CLAUDE.md (правила, ≤300 строк) → memory/*.md (справочники, по запросу)
-3. **Capture-to-Pack** — знания фиксируются по ходу работы, не теряются
-4. **WP Gate** — нетривиальная работа начинается с проверки плана. Нет в плане = не делаем
-5. **Open → Work → Close** — каждая сессия: открытие (что делаем) → работа (с фиксацией знаний) → закрытие (результат зафиксирован)
-6. **Безопасность по дизайну** — секреты вне git, per-user изоляция, приватные репозитории, CLI permission whitelist. Подробнее: [LEARNING-PATH.md § 8.5](docs/LEARNING-PATH.md)
-
-> Подробное описание каждого принципа, протокола и агента — в [LEARNING-PATH.md](docs/LEARNING-PATH.md).
 
 ---
 
 ## FAQ
 
 **Q: Нужна ли подписка Anthropic?**
-A: Для полной установки (Claude Code) — да, рекомендуется **Claude Pro** ($20/мес). Для минимальной установки (`setup.sh --core`) — нет, работает с любым AI CLI (Codex, Aider, Continue.dev и др.). Ядро экзокортекса — это markdown-файлы, совместимые с любой LLM. Подробнее: таблица совместимости AI CLI выше.
+A: Для полной установки (Claude Code) — да, рекомендуется **Claude Pro** ($20/мес). Для минимальной (`setup.sh --core`) — нет, работает с любым AI CLI.
 
 **Q: Работает ли на Linux/Windows?**
-A: Да. Ядро (CLAUDE.md + memory/ + Claude Code) работает на любой ОС. Автоматизация Стратега: macOS — launchd (автоматически), Linux — cron (настроить вручную), Windows — через WSL + cron. Без автоматизации Стратег запускается вручную.
+A: Да. Ядро работает на любой ОС. Автоматизация Стратега: macOS — launchd (авто), Linux — cron (вручную), Windows — WSL + cron.
 
 **Q: Что если я не хочу Стратега?**
 A: Можно не устанавливать launchd-агентов. CLAUDE.md и memory/ будут работать и без них — просто не будет автоматических планов.
 
-**Q: Как связан бот (@aist_me_bot) и экзокортекс?**
-A: Бот работает на тирах T1-T3 (без git). Экзокортекс (этот шаблон) — для T4+. Они используют одну базу знаний (через те же MCP-серверы), но экзокортекс даёт больше: Claude Code, Стратег, свои Pack.
-
-**Q: Что такое MCP и как проверить подключение?**
-A: MCP (Model Context Protocol) — протокол, через который Claude Code получает доступ к базе знаний платформы. Подключение настроено автоматически в `.claude/settings.local.json`. Проверить: откройте Claude Code в папке экзокортекса и попросите `knowledge-mcp search("принципы")` — должен вернуть документы из базы знаний.
+**Q: Как связан бот (@aist_me_bot) и IWE?**
+A: Бот работает на тирах T1-T3 (без git). IWE (этот шаблон) — для T4+. Они используют одну базу знаний (через MCP-серверы), но IWE даёт больше: Claude Code, Стратег, свои Pack.
 
 **Q: Что такое Pack?**
-A: Pack — это формализованная область знаний (паспорт предметной области). Например, PACK-product-management или PACK-machine-learning. Pack — единственный source-of-truth для доменного знания.
+A: Pack — формализованная область знаний (паспорт предметной области). Pack — единственный source-of-truth для доменного знания. Подробнее: [LEARNING-PATH.md](docs/LEARNING-PATH.md).
 
 **Q: Безопасны ли мои данные?**
-A: Три зоны защиты: (1) **Локальная** — CLAUDE.md и memory/ на вашем компьютере, защищены на уровне ОС; (2) **GitHub** — DS-strategy и Pack — приватные репозитории на вашем аккаунте; (3) **Платформа** — per-user OAuth, изоляция данных пользователей. Anthropic API [не использует данные для обучения](https://www.anthropic.com/policies/privacy-policy). Секреты (API-ключи, токены) хранятся в `~/.config/`, не в git. Подробнее: [LEARNING-PATH.md § 8.5](docs/LEARNING-PATH.md#85-безопасность-в-iwe).
+A: Три зоны защиты: (1) **Локальная** — CLAUDE.md и memory/ на вашем компьютере; (2) **GitHub** — DS-strategy и Pack — приватные репозитории; (3) **Платформа** — per-user изоляция. Подробнее: [DATA-POLICY.md](docs/DATA-POLICY.md).
 
-**Q: Claude видит мои пароли и API-ключи?**
-A: Нет. Claude Code видит только файлы в рабочей директории и исполняет только команды из whitelist (`.claude/settings.local.json`). Секреты хранятся в `~/.config/` и environment variables — за пределами рабочего пространства.
+---
+
+## Сокращения и термины
+
+| Сокращение | Расшифровка |
+|------------|-------------|
+| **IWE** | Intelligent Working Environment — интеллектуальная рабочая среда |
+| **ОС** | Операционная система (macOS, Linux, Windows) |
+| **ОРЗ** | Открытие → Работа → Закрытие — три стадии каждой сессии |
+| **РП** | Рабочий продукт — конкретный артефакт (документ, код, схема) |
+| **WP** | Work Product — то же, что РП (англ.) |
+| **Pack** | Паспорт предметной области — формализованные знания домена |
+| **DS** | Delivery System — производная система (код, планы, публикации) |
+| **FMT** | Format — шаблон структуры репозитория |
+| **MCP** | Model Context Protocol — протокол доступа Claude к внешним данным |
+| **FPF** | First Principles Framework — фреймворк первых принципов |
+| **SPF** | Second Principles Framework — фреймворк вторых принципов (структура Pack) |
+| **ZP** | Zero Principles — нулевые принципы (6 базовых ограничений) |
+| **ЦД** | Цифровой двойник — модель пользователя в базе данных |
+| **KE** | Knowledge Extraction — извлечение знаний из опыта в Pack |
+| **UL** | Ubiquitous Language — единый язык предметной области (DDD) |
+| **SOTA** | State Of The Art — лучшие современные практики |
+| **AI CLI** | Командная строка ИИ-ассистента (Claude Code, Codex, Aider и др.) |
+| **WSL** | Windows Subsystem for Linux — подсистема Linux в Windows |
 
 ---
 

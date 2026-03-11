@@ -10,7 +10,7 @@
 
 set -euo pipefail
 
-TEMPLATE_DIR="${1:-$HOME/Documents/IWE/FMT-exocortex-template}"
+TEMPLATE_DIR="${1:-$HOME/IWE/FMT-exocortex-template}"
 FAIL=0
 
 echo "=== Validating: $TEMPLATE_DIR ==="
@@ -101,7 +101,7 @@ MISSING=0
 for f in CLAUDE.md ONTOLOGY.md README.md \
          memory/MEMORY.md memory/hard-distinctions.md \
          memory/protocol-open.md memory/protocol-close.md \
-         memory/navigation.md \
+         memory/navigation.md memory/roles.md \
          roles/strategist/scripts/strategist.sh; do
     if [ ! -f "$TEMPLATE_DIR/$f" ]; then
         echo ""
