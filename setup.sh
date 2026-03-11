@@ -214,7 +214,7 @@ echo "[1/6] Configuring placeholders..."
 find "$TEMPLATE_DIR" -type f \( -name "*.md" -o -name "*.json" -o -name "*.sh" -o -name "*.plist" -o -name "*.yaml" -o -name "*.yml" \) | while read file; do
     sed -i '' \
         -e "s|{{GITHUB_USER}}|$GITHUB_USER|g" \
-        -e "s|{{WORKSPACE_DIR}}|$WORKSPACE_DIR|g" \
+        -e "s|/Users/ds/Documents/IWE|$WORKSPACE_DIR|g" \
         -e "s|{{CLAUDE_PATH}}|$CLAUDE_PATH|g" \
         -e "s|{{CLAUDE_PROJECT_SLUG}}|$CLAUDE_PROJECT_SLUG|g" \
         -e "s|{{TIMEZONE_HOUR}}|$TIMEZONE_HOUR|g" \

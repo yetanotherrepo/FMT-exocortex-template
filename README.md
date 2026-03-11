@@ -84,7 +84,7 @@ bash setup.sh --core
 
 1. Проверяет prerequisites (git, gh, claude)
 2. Показывает политику данных и запрашивает согласие ([DATA-POLICY.md](docs/DATA-POLICY.md))
-3. Заменяет 7 плейсхолдеров (`{{GITHUB_USER}}`, `{{WORKSPACE_DIR}}` и др.)
+3. Заменяет 7 плейсхолдеров (`{{GITHUB_USER}}`, `/Users/ds/Documents/IWE` и др.)
 4. Копирует `CLAUDE.md` → корень рабочей директории
 5. Копирует `memory/*.md` → `~/.claude/projects/.../memory/`
 6. Устанавливает launchd-агентов для Стратега
@@ -97,7 +97,7 @@ bash setup.sh --core
 <summary>Ручная настройка (если setup.sh не подходит)</summary>
 
 1. Замените `{{GITHUB_USER}}` на ваш GitHub username во всех файлах
-2. Замените `{{WORKSPACE_DIR}}` на путь к рабочей директории (напр. `~/IWE`)
+2. Замените `/Users/ds/Documents/IWE` на путь к рабочей директории (напр. `~/IWE`)
 3. Замените `{{HOME_DIR}}` на домашнюю директорию (значение `$HOME`)
 4. Замените `{{CLAUDE_PROJECT_SLUG}}` на путь через дефисы (напр. для `~/IWE` → `-Users-yourname-IWE`)
 5. Замените `{{TIMEZONE_HOUR}}` на час запуска стратега в UTC (напр. `4` для 7:00 MSK)

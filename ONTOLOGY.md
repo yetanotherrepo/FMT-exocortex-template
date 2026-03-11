@@ -171,7 +171,7 @@ Governance-хаб для управления задачами и стратег
 | Переменная | Назначение | Когда |
 |------------|-----------|-------|
 | `{{GITHUB_USER}}` | GitHub username | setup.sh |
-| `{{WORKSPACE_DIR}}` | Рабочая директория | setup.sh |
+| `/Users/ds/Documents/IWE` | Рабочая директория | setup.sh |
 | `{{TIMEZONE_HOUR}}` | Час запуска стратега (UTC) | setup.sh |
 | `{{TIMEZONE_DESC}}` | Описание времени | setup.sh |
 | `{{CLAUDE_PATH}}` | Путь к Claude CLI | setup.sh |

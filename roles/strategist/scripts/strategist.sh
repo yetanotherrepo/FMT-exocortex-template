@@ -7,7 +7,7 @@ set -e
 # Конфигурация
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
-WORKSPACE="{{WORKSPACE_DIR}}/DS-strategy"
+WORKSPACE="/Users/ds/Documents/IWE/DS-strategy"
 PROMPTS_DIR="$REPO_DIR/prompts"
 LOG_DIR="$HOME/logs/strategist"
 CLAUDE_PATH="{{CLAUDE_PATH}}"
@@ -43,7 +43,7 @@ notify() {
 
 notify_telegram() {
     local scenario="$1"
-    "{{WORKSPACE_DIR}}/FMT-exocortex-template/roles/synchronizer/scripts/notify.sh" strategist "$scenario" >> "$LOG_FILE" 2>&1 || true
+    "/Users/ds/Documents/IWE/FMT-exocortex-template/roles/synchronizer/scripts/notify.sh" strategist "$scenario" >> "$LOG_FILE" 2>&1 || true
 }
 
 fetch_wakatime_data() {
@@ -171,7 +171,7 @@ case "$1" in
         log "Sunday: running week review"
         run_claude "week-review"
         # Fallback push for Knowledge Index (optional, skip if repo doesn't exist)
-        KI_REPO="{{WORKSPACE_DIR}}/DS-Knowledge-Index-{{GITHUB_USER}}"
+        KI_REPO="/Users/ds/Documents/IWE/DS-Knowledge-Index-{{GITHUB_USER}}"
         if [ -d "$KI_REPO/.git" ]; then
             if git -C "$KI_REPO" log --oneline -1 --since="1 hour ago" --grep="week-review" 2>/dev/null | grep -q .; then
                 git -C "$KI_REPO" push >> "$LOG_FILE" 2>&1 && log "Pushed Knowledge Index (fallback)" || log "WARN: KI push failed"

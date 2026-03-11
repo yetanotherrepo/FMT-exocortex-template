@@ -2,7 +2,7 @@
 
 ## Контекст
 
-- Планы: {{WORKSPACE_DIR}}/DS-strategy/current/
+- Планы: /Users/ds/Documents/IWE/DS-strategy/current/
 
 ## Алгоритм
 
