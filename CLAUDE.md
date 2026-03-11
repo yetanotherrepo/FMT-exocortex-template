@@ -117,9 +117,10 @@ Level 3: DS (третьи принципы)        ← производные о
 | Терминология | `memory/hard-distinctions.md` |
 | FPF-паттерн | `memory/fpf-reference.md` |
 | Создание документа | `memory/checklists.md` |
+| Выбор роли для ритуала | `memory/roles.md` |
 | Архитектурное решение / SOTA | `memory/sota-reference.md` |
 
-Политика: ≤10 файлов, ≤100 строк каждый. Кросс-системное → memory/. Системное → repo/CLAUDE.md.
+Политика: ≤11 файлов. Справочники ≤100. Протоколы ≤150. Реестры (MEMORY, hard-distinctions) ≤200 + чистка на Close. Кросс-системное → memory/. Системное → repo/CLAUDE.md.
 Backup на Close: `memory/ + CLAUDE.md → DS-strategy/exocortex/`
 
 ---
