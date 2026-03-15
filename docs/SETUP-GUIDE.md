@@ -620,8 +620,8 @@ rm -rf ~/IWE/DS-strategy
 | `DP.IWE.001` | Что такое IWE, зачем, 5 архитектурных видов (системы, описания, роли, методы, рабочие продукты), тиры, контуры |
 | `DP.IWE.002` | Шаблон и установка: пререквизиты, стоимость, роли, ОРЗ, FAQ, безопасность |
 | `DP.EXOCORTEX.001` | Модульный экзокортекс: 3 слоя, template-sync, standard/personal |
-| `DP.ARCH.002` | Тиры T1-T5: что доступно на каждом уровне |
+| `DP.ARCH.002` | Тиры T0-T4 + TM1-TM3 + TA1-TA4 + TD1: что доступно на каждом уровне |
 | `DP.ROLE.001` | Полный реестр ИИ-ролей (21 роль) |
 
 > **Нужна помощь?** Спроси бота @aist_me_bot — он ищет по базе знаний платформы (Pack).
-> **Техническая проблема?** Открой issue: [github.com/aisystant/FMT-exocortex-template/issues](https://github.com/aisystant/FMT-exocortex-template/issues)
+> **Техническая проблема?** Открой issue: [github.com/aisystant/FMT-exocortex-template/issues](https://github.com/TserenTserenov/FMT-exocortex-template/issues)

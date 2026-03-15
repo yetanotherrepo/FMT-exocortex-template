@@ -5,6 +5,49 @@ All notable changes to FMT-exocortex-template will be documented in this file.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/).
 
+## [0.6.1] — 2026-03-15
+
+### Changed
+- **README переработан** — концептуальный файл для новичков: проблемы пользователей, аналогия IDE↔IWE, протокол ОРЗ, сценарии (рабочие + личные), сравнение с Obsidian/Notion. Детали установки → SETUP-GUIDE.md, глоссарий → ONTOLOGY.md
+- **LEARNING-PATH полная актуализация** — §5 ОРЗ-фрактал (День+Сессия), §1.3 тиры T0-T4, §3.2 различения HD #25-36, §5.3 dual routing, §8.1 АрхГейт + coordination cost, §11 чеклист Close 7→15 шагов
+- **Backport live→template** — protocol-work.md (ОРЗ День+Сессия), protocol-close.md (ветки, ad-hoc), hard-distinctions.md (HD #25-36), checklists.md (Pack + посты)
+
+### Added
+- **Activation Gate** — колонка «Активация» в WP-REGISTRY (3 типа: date/dep/on-demand) + Dormant Review в WeekPlan
+- **ONTOLOGY.md расширение** — 4 реализационных понятия (Creative Pipeline, Guard, DayPlan, WeekPlan) + 14 аббревиатур (TTL, HD, SOTA, SOP, DDD, CLI, API, LMS, S2R, PII, RSS, TG, ZP)
+- **Activation Check + Dormant Review** — секции в protocol-open.md (шаблон WeekPlan + повестка стратегирования)
+- **LEARNING-PATH §5.5** — описание Activation Gate, 2 новых вопроса в Quick Reference
+
+## [0.6.0] — 2026-03-14
+
+### Added
+- **Session tracking** — `open-sessions.log` в протоколах Open/Close для отслеживания активных сессий
+- **TG-оповещения об обновлениях** — GitHub Action ежедневно проверяет коммиты и отправляет дайджест подписчикам через бот
+- **5-й архитектурный вид (Методы)** — sync с DP.IWE.001, расширение архитектурной документации
+- **roles.md** — описание ролей экзокортекса + обновление memory policy
+- **ONTOLOGY.md в формате SPF.SPEC.002** — каскадная онтология с двуязычным глоссарием
+- **KE dual routing** — экстрактор знаний разделяет: доменное → Pack, реализационное → DS docs/
+- **dt-collect** — скрипты сбора данных активности для ЦД (WakaTime + git + sessions + WP stats) в роли синхронизатора
+- **Day Rhythm config** — конфиг ритма дня: помодоро-напоминания через WakaTime + launchd
+- **Опциональные компоненты** — README для модульных расширений, обновлённое дерево структуры
+- **HD #29-31** — новые hard distinctions: Pack≠DS, роли владельца, Шаг 0 Open-протокола, Capture реализации
+
+### Changed
+- **README компактный** — переработан для новичков, убраны лишние детали
+- **DP.AGENT → DP.ROLE** — миграция идентификаторов, удалён дубль strategist-agent/ (WP-63)
+- **repo-type-rules** — DS-ecosystem-development = governance + staging for Pack
+- **LEARNING-PATH** — добавлен триал 30 дней + подписка БР в таблице тиров
+- **CLAUDE.md §6** — правила форматирования таблиц РП (bold active, strikethrough done)
+- **notify-update workflow** — рефакторинг: webhook → бот рассылает подписчикам (вместо прямых Telegram API вызовов)
+- **Memory policy** — обновлены лимиты и правила хранения
+
+### Fixed
+- **MCP серверы** — регистрация через `claude mcp add` вместо JSON config (фикс для Claude Code)
+- **Memory symlink** — добавлен в setup.sh + правило workspace root в CLAUDE.md
+- **Стейлые промпты** — удалены дублирующие файлы из roles/strategist/prompts/
+- **CHANGELOG v0.5.0** — русскоязычный текст, убраны ссылки на Github
+- **Пути шаблона** — исправлены пути для Day Rhythm конфига
+
 ## [0.5.0] — 2026-03-10
 
 ### Added
@@ -40,7 +83,7 @@ Versioning: [Semantic Versioning](https://semver.org/).
 ## [0.3.0] — 2026-02-16
 
 ### Added
-- **LEARNING-PATH.md** — полный путь изучения экзокортекса (T1→T5)
+- **LEARNING-PATH.md** — полный путь изучения экзокортекса (T0→T4 + TM/TA/TD)
 - **update.sh** — обновление шаблона из upstream (fetch + merge + reinstall)
 - **SETUP-GUIDE.md** — пошаговое руководство установки
 - **IWE-HELP.md** — быстрый справочник
