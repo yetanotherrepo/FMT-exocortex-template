@@ -1,5 +1,5 @@
 #!/bin/bash
-# dt-collect.sh — сбор данных активности для ЦД
+# dt-collect.sh — сбор данных активности для ЦД (WP-106)
 #
 # Собирает: WakaTime + git stats + Claude Code sessions + WP stats
 # Записывает в digital_twins.data JSONB (Neon) через dt-collect-neon.py
@@ -16,9 +16,16 @@
 
 set -euo pipefail
 
+# Cross-platform date offset: portable_date_offset <days_back> <format>
+portable_date_offset() {
+    local days="$1"
+    local fmt="${2:-%Y-%m-%d}"
+    date -v-${days}d +"$fmt" 2>/dev/null || date -d "$days days ago" +"$fmt" 2>/dev/null
+}
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 WORKSPACE="{{WORKSPACE_DIR}}"
-LOG_DIR="{{HOME_DIR}}/logs/synchronizer"
+LOG_DIR="$HOME/logs/synchronizer"
 DATE=$(date +%Y-%m-%d)
 LOG_FILE="$LOG_DIR/dt-collect-$DATE.log"
 
@@ -28,7 +35,7 @@ DRY_RUN=false
 mkdir -p "$LOG_DIR"
 
 # Load env
-ENV_FILE="{{HOME_DIR}}/.config/aist/env"
+ENV_FILE="$HOME/.config/aist/env"
 if [ -f "$ENV_FILE" ]; then
     set -a; source "$ENV_FILE"; set +a
 fi
@@ -71,12 +78,12 @@ collect_wakatime() {
     TODAY_RESP=$(curl -s -H "Authorization: Basic $ENCODED" "$API/summaries?start=$DATE&end=$DATE" 2>/dev/null || echo "{}")
 
     # Last 7 days
-    local D7=$(date -v-7d +%Y-%m-%d)
+    local D7=$(portable_date_offset 7)
     local WEEK_RESP
     WEEK_RESP=$(curl -s -H "Authorization: Basic $ENCODED" "$API/summaries?start=$D7&end=$DATE" 2>/dev/null || echo "{}")
 
     # Last 30 days
-    local D30=$(date -v-30d +%Y-%m-%d)
+    local D30=$(portable_date_offset 30)
     local MONTH_RESP
     MONTH_RESP=$(curl -s -H "Authorization: Basic $ENCODED" "$API/summaries?start=$D30&end=$DATE" 2>/dev/null || echo "{}")
 
@@ -128,7 +135,7 @@ print(json.dumps(result))
 }
 
 # ============================================================
-# 2. Git Stats (все репо в workspace)
+# 2. Git Stats (все репо в {{WORKSPACE_DIR}}/)
 # ============================================================
 
 collect_git() {
@@ -136,7 +143,7 @@ collect_git() {
 import subprocess, json, os
 from datetime import datetime, timedelta
 
-workspace = '$WORKSPACE'
+workspace = os.path.expanduser('{{WORKSPACE_DIR}}')
 repos = []
 for name in sorted(os.listdir(workspace)):
     path = os.path.join(workspace, name)
@@ -247,7 +254,7 @@ if os.path.exists(log_path):
 
 # Also count from git log (more reliable — sessions leave commits)
 import subprocess
-workspace = '$WORKSPACE'
+workspace = os.path.expanduser('{{WORKSPACE_DIR}}')
 git_sessions_7d = 0
 for name in os.listdir(workspace):
     path = os.path.join(workspace, name)
@@ -276,7 +283,7 @@ print(json.dumps(result))
 # ============================================================
 
 collect_wp() {
-    local MEMORY_FILE="$HOME/.claude/projects/{{CLAUDE_PROJECT_SLUG}}/memory/MEMORY.md"
+    local MEMORY_FILE="$HOME/.claude/projects/-Users-$(whoami)-IWE/memory/MEMORY.md"
 
     python3 -c "
 import json, os, re
@@ -290,7 +297,7 @@ if os.path.exists(memory_path):
         in_table = False
         for line in f:
             # Look for the WP table
-            if '| # | ' in line or '| --- |' in line:
+            if '| # | РП' in line or '| --- |' in line:
                 in_table = True
                 continue
             if in_table:
@@ -317,7 +324,7 @@ print(json.dumps(result))
 # ============================================================
 
 collect_health() {
-    local STATE_DIR="{{HOME_DIR}}/.local/state/exocortex"
+    local STATE_DIR="$HOME/.local/state/exocortex"
     python3 -c "
 import json, os
 from datetime import datetime
