@@ -216,23 +216,23 @@ echo "[1/6] Configuring placeholders..."
 if $DRY_RUN; then
     PLACEHOLDER_FILES=$(find "$TEMPLATE_DIR" -type f \( -name "*.md" -o -name "*.json" -o -name "*.sh" -o -name "*.plist" -o -name "*.yaml" -o -name "*.yml" \) | wc -l | tr -d ' ')
     echo "  [DRY RUN] Would substitute placeholders in $PLACEHOLDER_FILES files"
-    echo "    {{GITHUB_USER}} → $GITHUB_USER"
-    echo "    {{WORKSPACE_DIR}} → $WORKSPACE_DIR"
-    echo "    {{CLAUDE_PATH}} → $CLAUDE_PATH"
-    echo "    {{CLAUDE_PROJECT_SLUG}} → $CLAUDE_PROJECT_SLUG"
-    echo "    {{TIMEZONE_HOUR}} → $TIMEZONE_HOUR"
-    echo "    {{TIMEZONE_DESC}} → $TIMEZONE_DESC"
-    echo "    {{HOME_DIR}} → $HOME_DIR"
+    echo "    TserenTserenov → $GITHUB_USER"
+    echo "    /Users/ds/Documents/IWE → $WORKSPACE_DIR"
+    echo "    /Users/ds/.local/bin/claude → $CLAUDE_PATH"
+    echo "    -Users-ds-Documents-IWE → $CLAUDE_PROJECT_SLUG"
+    echo "    +03 → $TIMEZONE_HOUR"
+    echo "    AST (Arabia Standard Time) → $TIMEZONE_DESC"
+    echo "    /Users/ds → $HOME_DIR"
 else
     find "$TEMPLATE_DIR" -type f \( -name "*.md" -o -name "*.json" -o -name "*.sh" -o -name "*.plist" -o -name "*.yaml" -o -name "*.yml" \) | while read file; do
         sed_inplace \
-            -e "s|{{GITHUB_USER}}|$GITHUB_USER|g" \
-            -e "s|{{WORKSPACE_DIR}}|$WORKSPACE_DIR|g" \
-            -e "s|{{CLAUDE_PATH}}|$CLAUDE_PATH|g" \
-            -e "s|{{CLAUDE_PROJECT_SLUG}}|$CLAUDE_PROJECT_SLUG|g" \
-            -e "s|{{TIMEZONE_HOUR}}|$TIMEZONE_HOUR|g" \
-            -e "s|{{TIMEZONE_DESC}}|$TIMEZONE_DESC|g" \
-            -e "s|{{HOME_DIR}}|$HOME_DIR|g" \
+            -e "s|TserenTserenov|$GITHUB_USER|g" \
+            -e "s|/Users/ds/Documents/IWE|$WORKSPACE_DIR|g" \
+            -e "s|/Users/ds/.local/bin/claude|$CLAUDE_PATH|g" \
+            -e "s|-Users-ds-Documents-IWE|$CLAUDE_PROJECT_SLUG|g" \
+            -e "s|+03|$TIMEZONE_HOUR|g" \
+            -e "s|AST (Arabia Standard Time)|$TIMEZONE_DESC|g" \
+            -e "s|/Users/ds|$HOME_DIR|g" \
             "$file"
     done
 

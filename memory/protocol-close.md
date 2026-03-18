@@ -16,9 +16,9 @@
 #### 1. Сбор данных
 
 ```bash
-for repo in $(ls {{WORKSPACE_DIR}}/); do
-  if [ -d {{WORKSPACE_DIR}}/$repo/.git ]; then
-    commits=$(git -C {{WORKSPACE_DIR}}/$repo log --since="today 00:00" --oneline --no-merges 2>/dev/null)
+for repo in $(ls /Users/ds/Documents/IWE/); do
+  if [ -d /Users/ds/Documents/IWE/$repo/.git ]; then
+    commits=$(git -C /Users/ds/Documents/IWE/$repo log --since="today 00:00" --oneline --no-merges 2>/dev/null)
     [ -n "$commits" ] && echo "=== $repo ===" && echo "$commits"
   fi
 done
@@ -45,7 +45,7 @@ done
 **г) Не забыто?** Стратег проверяет:
 - Незакоммиченные изменения (`git status` по всем репо)
 <!-- YOUR CUSTOM CHECKS HERE -->
-- **Governance-синхронизация:** новые репо или сервисы за день? → проверить: (1) `DS-ecosystem-development/0.OPS/REPOSITORY-REGISTRY.md` — быстрый тест: `ls -1d {{WORKSPACE_DIR}}/*/ | wc -l` vs записей в реестре; (2) `memory/navigation.md` — новые пути; (3) если коммиты в PROCESSES.md → сверить с MAP.002. Расхождение → пометить в задел на завтра
+- **Governance-синхронизация:** новые репо или сервисы за день? → проверить: (1) `DS-ecosystem-development/0.OPS/REPOSITORY-REGISTRY.md` — быстрый тест: `ls -1d /Users/ds/Documents/IWE/*/ | wc -l` vs записей в реестре; (2) `memory/navigation.md` — новые пути; (3) если коммиты в PROCESSES.md → сверить с MAP.002. Расхождение → пометить в задел на завтра
 - Незаписанные мысли? (спросить пользователя)
 - Обещания кому-то? (спросить пользователя)
 
