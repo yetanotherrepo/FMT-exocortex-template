@@ -6,10 +6,10 @@
 
 - **HUB (личные планы):** /Users/ds/Documents/IWE/DS-strategy/current/
 - **Документы стратегии:** /Users/ds/Documents/IWE/DS-strategy/docs/ (ВСЕ файлы: Strategy.md, Dissatisfactions.md, Session Agenda.md)
-- **Inbox:** /Users/ds/Documents/IWE/DS-strategy/inbox/ ([fleeting-notes.md](https://github.com/TserenTserenov/DS-strategy/blob/main/inbox/fleeting-notes.md) + свежие файлы за неделю)
+- **Inbox:** /Users/ds/Documents/IWE/DS-strategy/inbox/ ([fleeting-notes.md](https://github.com/{{GITHUB_USER}}/DS-strategy/blob/main/inbox/fleeting-notes.md) + свежие файлы за неделю)
 - **SPOKE (планы репо):** /Users/ds/Documents/IWE/*/WORKPLAN.md
 - **Стратегические карты:** /Users/ds/Documents/IWE/*/MAPSTRATEGIC.md (если есть в репо)
-- **MEMORY:** ~/.claude/projects/-Users-ds-Documents-IWE/memory/MEMORY.md
+- **MEMORY:** ~/.claude/projects/{{CLAUDE_PROJECT_SLUG}}/memory/MEMORY.md
 
 ## Именование файлов в current/
 
@@ -47,7 +47,7 @@ DS-strategy/
 
 - Прочитай `DS-strategy/inbox/fleeting-notes.md`
 - Прочитай ВСЕ файлы из `DS-strategy/inbox/` (кроме .DS_Store и .docx)
-- Прочитай `DS-strategy/inbox/unsatisfied-questions.md` — **структурированный отчёт** из feedback_triage DB: замечания (✏️) первые, urgent (high/critical) вторые, кластеры проблем третьи. Auto-triage уже выполнен ботом → Session-Prep проверяет кластеры (≥3 = **urgent** → WP-debt) и помечает resolved
+- Прочитай `DS-strategy/current/unsatisfied-questions.md` — **структурированный отчёт** из feedback_triage DB: замечания (✏️) первые, urgent (high/critical) вторые, кластеры проблем третьи. Auto-triage уже выполнен ботом → Session-Prep проверяет кластеры (≥3 = **urgent** → WP-debt) и помечает resolved
 - Для каждой заметки/файла определи: → в план недели? → capture в Pack? → в повестку для обсуждения? → удалить?
 - **Недельная агрегация Inbox Triage:**
   > Это НЕ дубль ежедневного triage Note-Review. Note-Review классифицирует заметки и пишет предложения в целевые документы. Session-Prep агрегирует результаты за неделю из этих документов + добавляет unsatisfied-questions.
@@ -120,7 +120,8 @@ DS-strategy/
    - Если фронтматтер WP-файла не совпадает с MEMORY.md → обновить фронтматтер перед перемещением
 6. **Полная очистка inbox/ (еженедельно, единственный владелец — Session-Prep):**
    - `extraction-reports/` — отчёты старше 7 дней → удали (информация уже в Pack)
-   - `captures.md` — записи с `[processed]` старше 14 дней → удали (уже в Pack)
+   - `captures.md` — записи с `[processed ...]` старше 14 дней → **архивируй** в `archive/captures/captures-{period}.md` (НЕ удалять — это аудитный след записи в Pack). Записи с `[rejected ...]` старше 14 дней → архивируй туда же.
+   - Записи **без** метки `[processed]` или `[rejected]` → оставить (ещё не обработаны Экстрактором)
    - Прочие файлы (не fleeting-notes.md, не captures.md, не активные WP-*) → «Ещё нужен?» Нет → удали или `archive/notes/`
 7. Создай `current/WeekPlan W{N} YYYY-MM-DD.md` (Пн текущей недели)
 8. Закоммить в DS-strategy

@@ -14,8 +14,8 @@
 ## Конфигурация
 
 > Перед обработкой прочитай:
-> 1. `~/Documents/IWE/DS-strategy/roles/extractor/config/routing.md` — таблицы маршрутизации
-> 2. `~/Documents/IWE/DS-strategy/roles/extractor/config/feedback-log.md` — лог отклонённых кандидатов
+> 1. `/Users/ds/Documents/IWE/FMT-exocortex-template/roles/extractor/config/routing.md` — таблицы маршрутизации
+> 2. `/Users/ds/Documents/IWE/FMT-exocortex-template/roles/extractor/config/feedback-log.md` — лог отклонённых кандидатов
 
 ## Алгоритм
 

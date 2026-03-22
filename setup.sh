@@ -216,22 +216,22 @@ echo "[1/6] Configuring placeholders..."
 if $DRY_RUN; then
     PLACEHOLDER_FILES=$(find "$TEMPLATE_DIR" -type f \( -name "*.md" -o -name "*.json" -o -name "*.sh" -o -name "*.plist" -o -name "*.yaml" -o -name "*.yml" \) | wc -l | tr -d ' ')
     echo "  [DRY RUN] Would substitute placeholders in $PLACEHOLDER_FILES files"
-    echo "    TserenTserenov → $GITHUB_USER"
+    echo "    {{GITHUB_USER}} → $GITHUB_USER"
     echo "    /Users/ds/Documents/IWE → $WORKSPACE_DIR"
-    echo "    /Users/ds/.local/bin/claude → $CLAUDE_PATH"
-    echo "    -Users-ds-Documents-IWE → $CLAUDE_PROJECT_SLUG"
-    echo "    +03 → $TIMEZONE_HOUR"
-    echo "    AST (Arabia Standard Time) → $TIMEZONE_DESC"
+    echo "    {{CLAUDE_PATH}} → $CLAUDE_PATH"
+    echo "    {{CLAUDE_PROJECT_SLUG}} → $CLAUDE_PROJECT_SLUG"
+    echo "    {{TIMEZONE_HOUR}} → $TIMEZONE_HOUR"
+    echo "    {{TIMEZONE_DESC}} → $TIMEZONE_DESC"
     echo "    /Users/ds → $HOME_DIR"
 else
     find "$TEMPLATE_DIR" -type f \( -name "*.md" -o -name "*.json" -o -name "*.sh" -o -name "*.plist" -o -name "*.yaml" -o -name "*.yml" \) | while read file; do
         sed_inplace \
-            -e "s|TserenTserenov|$GITHUB_USER|g" \
+            -e "s|{{GITHUB_USER}}|$GITHUB_USER|g" \
             -e "s|/Users/ds/Documents/IWE|$WORKSPACE_DIR|g" \
-            -e "s|/Users/ds/.local/bin/claude|$CLAUDE_PATH|g" \
-            -e "s|-Users-ds-Documents-IWE|$CLAUDE_PROJECT_SLUG|g" \
-            -e "s|+03|$TIMEZONE_HOUR|g" \
-            -e "s|AST (Arabia Standard Time)|$TIMEZONE_DESC|g" \
+            -e "s|{{CLAUDE_PATH}}|$CLAUDE_PATH|g" \
+            -e "s|{{CLAUDE_PROJECT_SLUG}}|$CLAUDE_PROJECT_SLUG|g" \
+            -e "s|{{TIMEZONE_HOUR}}|$TIMEZONE_HOUR|g" \
+            -e "s|{{TIMEZONE_DESC}}|$TIMEZONE_DESC|g" \
             -e "s|/Users/ds|$HOME_DIR|g" \
             "$file"
     done
@@ -326,7 +326,7 @@ else
         else
             echo "  WARN: settings.local.json not found in template."
         fi
-        echo "  [DRY RUN] Would register MCP servers: knowledge-mcp, ddt"
+        echo "  [DRY RUN] Would show MCP setup instructions (claude.ai/settings/connectors)"
     else
         mkdir -p "$WORKSPACE_DIR/.claude"
         if [ -f "$TEMPLATE_DIR/.claude/settings.local.json" ]; then
@@ -336,15 +336,15 @@ else
             echo "  WARN: settings.local.json not found in template, skipping."
         fi
 
-        # Register MCP servers via CLI (Claude Code requires `claude mcp add`, not just JSON config)
-        echo "  Adding MCP servers..."
-        cd "$WORKSPACE_DIR"
-        claude mcp add --transport http --scope project knowledge-mcp "https://knowledge-mcp.aisystant.workers.dev/mcp" 2>/dev/null && \
-            echo "  ✓ knowledge-mcp added" || \
-            echo "  ○ knowledge-mcp: add manually: claude mcp add --transport http knowledge-mcp https://knowledge-mcp.aisystant.workers.dev/mcp"
-        claude mcp add --transport http --scope project ddt "https://digital-twin-mcp.aisystant.workers.dev/mcp" 2>/dev/null && \
-            echo "  ✓ ddt added" || \
-            echo "  ○ ddt: add manually: claude mcp add --transport http ddt https://digital-twin-mcp.aisystant.workers.dev/mcp"
+        # MCP servers are managed through claude.ai connectors (not local CLI)
+        echo "  MCP серверы подключаются через claude.ai:"
+        echo ""
+        echo "  1. Откройте https://claude.ai/settings/connectors"
+        echo "  2. Добавьте: https://knowledge-mcp.aisystant.workers.dev/mcp"
+        echo "  3. Добавьте: https://digital-twin-mcp.aisystant.workers.dev/mcp"
+        echo "  4. Перезапустите Claude Code"
+        echo ""
+        echo "  После подключения проверьте командой /mcp в Claude Code."
     fi
 fi
 

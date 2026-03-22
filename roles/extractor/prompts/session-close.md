@@ -14,8 +14,8 @@
 ## Конфигурация
 
 > Перед обработкой прочитай:
-> 1. `~/Documents/IWE/DS-strategy/roles/extractor/config/routing.md` — таблицы маршрутизации (Pack'и, типы, директории)
-> 2. `~/Documents/IWE/DS-strategy/roles/extractor/config/feedback-log.md` — лог отклонённых кандидатов (не предлагай аналогичные)
+> 1. `/Users/ds/Documents/IWE/FMT-exocortex-template/roles/extractor/config/routing.md` — таблицы маршрутизации (Pack'и, типы, директории)
+> 2. `/Users/ds/Documents/IWE/FMT-exocortex-template/roles/extractor/config/feedback-log.md` — лог отклонённых кандидатов (не предлагай аналогичные)
 
 ## Алгоритм
 
@@ -318,6 +318,18 @@ epistemic_stage: emerging
    - Закоммить в соответствующий репо
 3. Для reject — ничего не делай.
 4. Для defer — запиши в `DS-strategy/inbox/` для следующего цикла.
+
+### Шаг 8a: Пометка captures
+
+> После применения accept-кандидатов — пометить обработанные captures в `DS-strategy/inbox/captures.md`.
+
+1. Для каждого accept-кандидата, который был взят из `captures.md`:
+   - Добавить `[processed YYYY-MM-DD]` к заголовку записи
+   - `[processed]` ставится **ТОЛЬКО** после подтверждённой записи в Pack (не при чтении)
+2. Для reject-кандидатов из captures.md — добавить `[rejected YYYY-MM-DD]` с причиной
+3. Для defer-кандидатов — оставить без метки (вернётся на следующий цикл)
+
+> **ВАЖНО:** `[processed]` = «знание записано в Pack». НЕ «прочитано» и НЕ «проанализировано».
 
 ## Что НЕ делать
 

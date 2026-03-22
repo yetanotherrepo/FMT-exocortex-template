@@ -22,12 +22,12 @@
 
 ### Шаг 0: Прочитать конфигурацию
 
-1. Прочитай `~/Documents/IWE/DS-strategy/roles/extractor/config/routing.md` — таблицы маршрутизации.
-2. Прочитай `~/Documents/IWE/DS-strategy/roles/extractor/config/feedback-log.md` — лог отклонённых кандидатов. Если capture похож на ранее отклонённый → пропусти.
+1. Прочитай `/Users/ds/Documents/IWE/FMT-exocortex-template/roles/extractor/config/routing.md` — таблицы маршрутизации.
+2. Прочитай `/Users/ds/Documents/IWE/FMT-exocortex-template/roles/extractor/config/feedback-log.md` — лог отклонённых кандидатов. Если capture похож на ранее отклонённый → пропусти.
 
 ### Шаг 1: Проверить inbox
 
-1. Прочитай `~/Documents/IWE/DS-strategy/inbox/captures.md`
+1. Прочитай `/Users/ds/Documents/IWE/DS-strategy/inbox/captures.md`
 2. Найди все pending записи (секции `### ...` без метки `[processed]`)
 3. Если pending записей нет → напиши в лог `No pending captures in inbox` и **заверши работу**
 4. Если pending > 5 → возьми первые 5 (по порядку в файле)
@@ -70,7 +70,7 @@
 
 ### Шаг 3: Сгенерировать Extraction Report
 
-Создай файл отчёта: `~/Documents/IWE/DS-strategy/inbox/extraction-reports/{YYYY-MM-DD}-inbox-check.md`
+Создай файл отчёта: `/Users/ds/Documents/IWE/DS-strategy/inbox/extraction-reports/{YYYY-MM-DD}-inbox-check.md`
 
 Если файл с таким именем уже существует, добавь суффикс: `{YYYY-MM-DD}-inbox-check-2.md`.
 
@@ -133,17 +133,19 @@ remaining: M
 | Осталось в inbox | M |
 ```
 
-### Шаг 4: Пометить обработанные captures
+### Шаг 4: Пометить captures как проанализированные
 
-В `DS-strategy/inbox/captures.md` — для каждого обработанного capture добавь метку `[processed YYYY-MM-DD]` к заголовку:
+В `DS-strategy/inbox/captures.md` — для каждого проанализированного capture добавь метку `[analyzed YYYY-MM-DD]` к заголовку:
 
 **Было:** `### Паттерн X`
-**Стало:** `### Паттерн X [processed 2026-02-12]`
+**Стало:** `### Паттерн X [analyzed 2026-02-12]`
+
+> **ВАЖНО:** НЕ ставить `[processed]`! Метка `[processed]` означает «записано в Pack» и ставится ТОЛЬКО в session-close после подтверждённой записи. `[analyzed]` означает «extraction report создан, ожидает применения».
 
 ### Шаг 5: Закоммитить
 
 1. Закоммить extraction report (новый)
-2. Закоммить captures.md (метки processed)
+2. Закоммить captures.md (метки analyzed)
 3. Запушить DS-strategy
 
 **Сообщение коммита:** `inbox-check: N captures → extraction report {date}`
@@ -151,7 +153,7 @@ remaining: M
 ## Что НЕ делать
 
 - **НЕ записывай в Pack** — только генерируй отчёт. Запись = только в интерактивной сессии после одобрения
-- Не удаляй captures из captures.md — только помечай [processed]
+- **НЕ ставь `[processed]`** — только `[analyzed]`. `[processed]` = записано в Pack (ставит session-close)
 - Не создавай файлы без frontmatter
 - Не экстрагируй governance-контент
 - Не предлагай кандидаты, похожие на паттерны из feedback-log.md

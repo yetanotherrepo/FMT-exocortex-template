@@ -244,7 +244,7 @@ FMT-exocortex-template/
 #### Что делает setup.sh
 
 1. Форкает шаблон → твой GitHub аккаунт
-2. Подставляет 7 плейсхолдеров (`TserenTserenov`, `/Users/ds/Documents/IWE` и др.)
+2. Подставляет 7 плейсхолдеров (`{{GITHUB_USER}}`, `/Users/ds/Documents/IWE` и др.)
 3. Копирует `CLAUDE.md` → корень рабочей директории
 4. Копирует `memory/*.md` → `~/.claude/projects/.../memory/`
 5. Создаёт `DS-strategy/` из `seed/strategy/` (отдельный приватный репо)
@@ -326,7 +326,7 @@ MEMORY.md                   ← Твоя таблица РП
 DS-strategy/                ← Твои планы, inbox/, docs/
 PACK-{область}/             ← Твои доменные знания
 .secrets/, .mcp.json        ← Ключи и конфигурация
-.claude/settings.local.json ← Твои permissions и MCP
+.claude/settings.local.json ← Твои permissions
 ```
 
 **Свои правила:** добавляй в секцию «8. Мои правила» в конце CLAUDE.md (после маркера `<!-- USER-SPACE -->`). Эта секция сохраняется при обновлении. Правила в `<repo>/CLAUDE.md` конкретных репо не затрагиваются вообще.
@@ -359,6 +359,17 @@ PACK-{область}/             ← Твои доменные знания
 | systemsworld.club | Экосистема | Регистрация | Сообщество, семинары | Доступ к материалам |
 | Git + GitHub | Инфраструктура | `setup.sh` (авто) | Версионирование, агенты | Репозитории, CI |
 | Marp | Инструмент | VS Code extension + CLI | Markdown → слайды | Слайдоменты (PDF/HTML) |
+| Cloud Scheduler | Автоматика | `setup/optional/setup-cloud-scheduler.sh` | IWE работает 24/7 при выключенном Mac | Backup, health check, уведомления |
+
+**Cloud Scheduler — облачная автоматика IWE:** GitHub Actions workflow запускает backup и health check ежедневно в 04:00 MSK — даже если Mac выключен. Базовый уровень ($0/мес, без LLM). Опционально: Telegram-уведомления с отчётом. Установка: `bash setup/optional/setup-cloud-scheduler.sh`. Подробности: `setup/optional/README.md`, сценарий [DP.SC.019](../../PACK-digital-platform/pack/digital-platform/08-use-cases/DP.SC.019-autonomous-cloud-runtime.md).
+
+**Настройка Health Check (расширенный):** По умолчанию health check проверяет только strategy-репо. Для мульти-репо мониторинга:
+1. GitHub → Settings → Variables → Actions → добавьте `HEALTH_CHECK_REPOS` — список ваших репо через запятую (`owner/repo, owner/repo2`)
+2. (Опционально) Добавьте `BOT_HEALTH_URL` — URL health endpoint бота для проверки доступности
+3. (Опционально) Добавьте Secrets: `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` для уведомлений в Telegram
+4. PAT (`STRATEGY_REPO_TOKEN`) должен иметь доступ ко всем указанным репо
+
+Ручной запуск: `gh workflow run cloud-scheduler.yml --field task=health-check`. Отчёт: коммиты (24ч + 7д по репо), DayPlan, WeekPlan, backup (<48ч), сессии, статус бота, WP-статистика, светофор.
 
 **Marp — подготовка презентаций:** Marp превращает Markdown-файлы в слайды (PDF, HTML, PPTX). Workflow: пишешь `.md` с разделителем `---` → предпросмотр в VS Code (Marp extension) → экспорт `marp --pdf slides.md`. Слайдоменты (MIM.WP.001) — текстовые, поэтому Markdown + Git = версии, диффы, правки через Claude Code. Установка: `npm install -g @marp-team/marp-cli` + VS Code → Extensions → «Marp for VS Code».
 
@@ -652,7 +663,7 @@ DS — самый частый тип репозитория, который т�
 
 **Экзоскелетный режим** (только problem-framing): Claude НЕ предлагает решение сразу. Сначала 3 уточняющих вопроса (Что? Зачем? Ограничения?) → ответы → 2-3 варианта подхода с trade-offs → пользователь выбирает → работа.
 
-**Регистрация сессии:** после согласования → строка в `DS-strategy/inbox/open-sessions.log`.
+**Регистрация сессии:** после согласования → строка в `DS-agent-workspace/scheduler/open-sessions.log`.
 
 ### 5.1c. Session Close: полный чеклист
 
@@ -978,7 +989,7 @@ PACK-{область}/
 
 ### 6.5. MCP-серверы знаний
 
-Claude Code подключается к 3 MCP-серверам платформы (через `.claude/settings.local.json`). Одна база знаний — бот и экзокортекс работают с одними и теми же серверами.
+Claude Code подключается к 3 MCP-серверам платформы (через https://claude.ai/settings/connectors). Одна база знаний — бот и экзокортекс работают с одними и теми же серверами.
 
 #### knowledge-mcp — поиск по базе знаний
 
