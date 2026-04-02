@@ -8,13 +8,16 @@ set -e
 # Флаг -s (system sleep) не используем — он НЕ работает на батарее (OBC может переключить профиль)
 caffeinate -diu -w $$ &
 
+# Fix file descriptor limit for launchd (default 256 is too low for Claude CLI)
+ulimit -n 2147483646 2>/dev/null || ulimit -n 10240 2>/dev/null || true
+
 # Конфигурация
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
-WORKSPACE="$HOME/IWE/DS-strategy"
+WORKSPACE="$HOME/Documents/IWE/DS-strategy"
 PROMPTS_DIR="$REPO_DIR/prompts"
 LOG_DIR="$HOME/logs/strategist"
-CLAUDE_PATH="{{CLAUDE_PATH}}"
+CLAUDE_PATH="/Users/ds/.local/bin/claude"
 CLAUDE_TIMEOUT=1800  # 30 мин — защита от зависания Claude CLI
 
 # macOS не имеет GNU timeout — используем perl fallback
@@ -61,16 +64,23 @@ notify() {
 
 notify_telegram() {
     local scenario="$1"
-    "$HOME/IWE/DS-IT-systems/DS-ai-systems/synchronizer/scripts/notify.sh" strategist "$scenario" >> "$LOG_FILE" 2>&1 || true
+    "$HOME/Documents/IWE/DS-IT-systems/DS-ai-systems/synchronizer/scripts/notify.sh" strategist "$scenario" >> "$LOG_FILE" 2>&1 || true
 }
 
 run_claude() {
     local command_file="$1"
     local command_path="$PROMPTS_DIR/$command_file.md"
 
+    # Fallback: если промпт не в шаблоне, ищем в DS-strategy (user prompts)
     if [ ! -f "$command_path" ]; then
-        log "ERROR: Command file not found: $command_path"
-        exit 1
+        local ds_path="$WORKSPACE/roles/strategist/prompts/$command_file.md"
+        if [ -f "$ds_path" ]; then
+            command_path="$ds_path"
+            log "Using DS-strategy prompt: $ds_path"
+        else
+            log "ERROR: Command file not found: $command_path (also checked $ds_path)"
+            exit 1
+        fi
     fi
 
     # Читаем содержимое команды
@@ -98,10 +108,9 @@ ${prompt}"
 
     # Запуск Claude Code с содержимым команды как промпт (с timeout-защитой)
     local rc=0
-    timeout "$CLAUDE_TIMEOUT" "$CLAUDE_PATH" --dangerously-skip-permissions \
-        --allowedTools "Read,Write,Edit,Glob,Grep,Bash" \
+    CLAUDECODE="" timeout "$CLAUDE_TIMEOUT" "$CLAUDE_PATH" --dangerously-skip-permissions \
         -p "$prompt" \
-        >> "$LOG_FILE" 2>&1 || rc=$?
+        2>&1 | tee -a "$LOG_FILE" || rc=${PIPESTATUS[0]}
 
     if [ $rc -eq 124 ]; then
         log "WARN: Claude CLI timed out after ${CLAUDE_TIMEOUT}s for scenario: $command_file"
