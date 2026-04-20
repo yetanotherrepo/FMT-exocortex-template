@@ -1,15 +1,14 @@
 Выполни сценарий «Подготовка к сессии стратегирования» для роли Стратег (R1).
 
-Источник сценария: /Users/ds/Documents/IWE/PACK-digital-platform/pack/digital-platform/02-domain-entities/DP.ROLE.012-strategist/scenarios/scheduled/01-strategy-session.md
 
 ## Контекст
 
 - **HUB (личные планы):** /Users/ds/Documents/IWE/DS-strategy/current/
 - **Документы стратегии:** /Users/ds/Documents/IWE/DS-strategy/docs/ (ВСЕ файлы: Strategy.md, Dissatisfactions.md, Session Agenda.md)
-- **Inbox:** /Users/ds/Documents/IWE/DS-strategy/inbox/ ([fleeting-notes.md](https://github.com/{{GITHUB_USER}}/DS-strategy/blob/main/inbox/fleeting-notes.md) + свежие файлы за неделю)
+- **Inbox:** /Users/ds/Documents/IWE/DS-strategy/inbox/ ([fleeting-notes.md](https://github.com/yetanotherrepo/DS-strategy/blob/main/inbox/fleeting-notes.md) + свежие файлы за неделю)
 - **SPOKE (планы репо):** /Users/ds/Documents/IWE/*/WORKPLAN.md
 - **Стратегические карты:** /Users/ds/Documents/IWE/*/MAPSTRATEGIC.md (если есть в репо)
-- **MEMORY:** ~/.claude/projects/{{CLAUDE_PROJECT_SLUG}}/memory/MEMORY.md
+- **MEMORY:** ~/.claude/projects/-Users-ds-Documents-IWE/memory/MEMORY.md
 
 ## Именование файлов в current/
 
@@ -118,7 +117,10 @@ DS-strategy/
    - `status: done` / `merged` / `drop` всё ещё в inbox? → переместить в `archive/wp-contexts/` (Close пропустил)
    - Если фронтматтер WP-файла не совпадает с MEMORY.md → обновить фронтматтер перед перемещением
 6. **Полная очистка inbox/ (еженедельно, единственный владелец — Session-Prep):**
-   - `extraction-reports/` — отчёты старше 7 дней → удали (информация уже в Pack)
+   - `extraction-reports/` — учитывай `status` во frontmatter (инвариант «capture не исчезает без решения»):
+     - `status ∈ {applied, rejected, no-pending}` и старше 7 дней → удали (решение принято, информация в Pack/feedback-log)
+     - `status ∈ {pending-review, partially-applied, deferred}` → **не трогай** (ждут разбора через `/apply-captures`)
+     - Без frontmatter или без поля `status` → оставить (считать pending-review)
    - `captures.md` — записи с `[processed ...]` старше 14 дней → **архивируй** в `archive/captures/captures-{period}.md` (НЕ удалять — это аудитный след записи в Pack). Записи с `[rejected ...]` старше 14 дней → архивируй туда же.
    - Записи **без** метки `[processed]` или `[rejected]` → оставить (ещё не обработаны Экстрактором)
    - Прочие файлы (не fleeting-notes.md, не captures.md, не активные WP-*) → «Ещё нужен?» Нет → удали или `archive/notes/`

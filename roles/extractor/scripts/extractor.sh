@@ -16,7 +16,7 @@ REPO_DIR="$(dirname "$SCRIPT_DIR")"
 WORKSPACE="/Users/ds/Documents/IWE"
 PROMPTS_DIR="$REPO_DIR/prompts"
 LOG_DIR="/Users/ds/logs/extractor"
-CLAUDE_PATH="{{CLAUDE_PATH}}"
+CLAUDE_PATH="/Users/ds/.local/bin/claude"
 ENV_FILE="/Users/ds/.config/aist/env"
 
 # AI CLI: переопределение через переменные окружения (см. strategist.sh)

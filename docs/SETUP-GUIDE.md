@@ -4,7 +4,7 @@
 > Подходит для macOS. Linux и Windows (WSL) — см. примечания в каждом шаге.
 >
 > **Source-of-truth:** `DP.IWE.002` (Pack). При расхождении с этим файлом — приоритет у Pack.
-> Через MCP: `knowledge-mcp search("установка IWE шаблон")`.
+> Через Gateway: `knowledge_search("установка IWE шаблон")`.
 
 <details open>
 <summary><b>Где ты сейчас и куда идёшь</b></summary>
@@ -154,7 +154,7 @@ gh auth status
 
 Claude Code — это ИИ-агент, работающий в терминале (или в VS Code). Он читает файлы, выполняет команды, помогает планировать и писать код.
 
-Требует подписку Anthropic. Рекомендуется начать с **Claude Pro** ($20/мес). Если получите значительный эффект от работы с Claude Code и упрётесь в лимиты — переходите на **Claude Max** (~$100/мес) для работы без ограничений.
+Требует подписку Anthropic. Рекомендуется начать с **Claude Pro** ($20/мес). При необходимости — **Claude Max** (~$100/мес) для работы без ограничений.
 
 В терминале:
 ```bash
@@ -230,7 +230,6 @@ bash setup.sh
 | Вопрос | Что ввести | Пример |
 |--------|-----------|--------|
 | GitHub username | Твой логин на GitHub | `ivan-petrov` |
-| Имя экзокортекс-репо | Название твоего репо | `DS-exocortex` (по умолчанию) |
 | Workspace directory | Рабочая папка | Просто нажми Enter (определяется автоматически) |
 | Claude CLI path | Путь к claude | Просто нажми Enter (определяется автоматически) |
 | Strategist launch hour (UTC) | Час запуска Стратега | `4` (= 7:00 MSK, 8:00 Алматы) |
@@ -265,23 +264,40 @@ launchctl list | grep strategist
 
 ### 1.3b Подключи MCP-серверы
 
-MCP (Model Context Protocol) — это доступ Claude Code к базе знаний платформы: документам, руководствам, цифровому двойнику. MCP-серверы подключаются через claude.ai (не локально).
+MCP (Model Context Protocol) -- это доступ Claude Code к базе знаний платформы: документам, руководствам, цифровому двойнику.
+
+> **Зачем:** Документация и Pack-сущности (DP.IWE.001, DP.ARCH.001 и др.) ссылаются на source-of-truth в PACK-digital-platform. После подключения MCP Claude сможет находить эти сущности по запросу. Без MCP -- сущности доступны только как файлы на GitHub.
 
 **Подключение:**
 
 1. Открой https://claude.ai/settings/connectors
-2. Добавь MCP-сервер: `https://knowledge-mcp.aisystant.workers.dev/mcp`
-3. Добавь MCP-сервер: `https://digital-twin-mcp.aisystant.workers.dev/mcp`
-4. Перезапусти Claude Code
+2. Добавь MCP-сервер (Gateway): `https://mcp.aisystant.com/mcp`
+3. Перезапусти Claude Code
 
-**Проверка:**
+**Как работает:** Claude Code подключается к Gateway-серверу iwe-knowledge через claude.ai connectors. Gateway агрегирует все бэкенды (knowledge, digital-twin) и предоставляет инструменты (`knowledge_search`, `knowledge_get_document`, `knowledge_feedback`, `dt_read_digital_twin` и др.).
 
-Открой Claude Code в папке экзокортекса и набери `/mcp` — оба сервера должны быть в статусе Connected. Затем попроси:
+#### Проверка
+
+Открой Claude Code в папке экзокортекса и набери `/mcp` -- серверы должны быть в статусе Connected. Затем попроси:
 > Найди документы про принципы
 
-Claude должен использовать `knowledge-mcp search("принципы")` и вернуть список документов из базы знаний.
+Claude должен использовать `knowledge_search("принципы")` и вернуть список документов из базы знаний.
 
-> **Не работает?** Проверь `/mcp` — серверы должны отображаться со статусом Connected. Если их нет — повтори шаги 1-4 выше.
+**Диагностика:**
+
+```bash
+# Проверить всю установку (env, файлы, extensions, MCP-доступность)
+bash FMT-exocortex-template/setup.sh --validate
+```
+
+| Проблема | Решение |
+|----------|---------|
+| `/mcp` -- серверов нет | Повтори шаги 1-3 (claude.ai connectors) |
+| Открыл URL в браузере -- "Not found" | Нормально. MCP работает по POST (JSON-RPC), не по GET. Проверяй через `/mcp` в Claude Code |
+| `iwe-knowledge` -- connection error | Проверь интернет-соединение |
+| `--validate` показывает ошибки | Следуй подсказкам. Недостающие ключи -- заполни в `.exocortex.env` |
+
+> **Подсказка:** `setup.sh --validate` проверяет ВСЕ категории сразу: env-конфиг, обязательные файлы, extensions, MCP-доступность.
 
 ### 1.4 Установка дополнительных ролей (позже)
 
@@ -592,7 +608,7 @@ sudo rtcwake -m no -t $(date -d "tomorrow 03:55" +%s)
 
 ```powershell
 # Пробуждение через Task Scheduler
-schtasks /create /tn "ExocortexWake" /tr "wsl ~/IWE/DS-IT-systems/DS-ai-systems/synchronizer/scripts/scheduler.sh dispatch" /sc daily /st 04:00
+schtasks /create /tn "ExocortexWake" /tr "wsl ~/IWE/scripts/scheduler.sh dispatch" /sc daily /st 04:00
 # Предотвращение сна: powercfg /change standby-timeout-ac 0
 ```
 
@@ -675,14 +691,16 @@ bash update.sh
 CLAUDE.md (§1-7), memory/ (протоколы, справочники), промпты и скрипты ролей, hooks, скиллы, setup-скрипты. Если скрипты ролей изменились — автоматически переустановятся launchd-агенты.
 
 **Что НЕ трогается (user-space):**
-- CLAUDE.md § «Мои правила» (секция USER-SPACE) — ваши правила и различения
+- CLAUDE.md — 3-way merge: ваши правки в любой секции сохраняются при обновлении
+- extensions/ — ваши расширения протоколов
+- params.yaml — ваши параметры протоколов
 - MEMORY.md — ваша оперативная память (РП, уроки)
 - DS-strategy/ — планы, стратегия, inbox
 - .secrets/, .mcp.json — ключи и конфигурация интеграций
 - .claude/settings.local.json — персональные permissions
 - personal/ — ваши файлы
 
-**Свои правила:** добавляйте в секцию «8. Мои правила» в конце CLAUDE.md (после маркера `<!-- USER-SPACE -->`). Эта секция сохраняется при обновлении. Правила в `<repo>/CLAUDE.md` конкретных репо не затрагиваются вообще.
+**Кастомизация протоколов:** создавайте файлы в `extensions/` — они подключаются в протоколы через extension points. Формат: `<protocol>.<hook>.md` (например `day-close.after.md`). Управляйте параметрами через `params.yaml`. Подробнее: [extensions/README.md](../extensions/README.md).
 
 > Посмотреть доступные обновления без применения: `bash update.sh --check`
 
@@ -709,7 +727,7 @@ IWE работает преимущественно локально. Вот ч�
 |-----------|------|-------------|
 | **Claude Code** | Anthropic API (США) | Промпты, содержимое файлов из контекста. [Privacy Policy](https://www.anthropic.com/privacy) |
 | **WakaTime** (опц.) | wakatime.com (США) | Метаданные: имена проектов, файлов, языки, время. **НЕ** содержимое файлов |
-| **MCP knowledge-mcp** | Сервер платформы | Поисковые запросы. Данные пользователя не отправляются |
+| **MCP iwe-knowledge** (Gateway) | Сервер платформы (mcp.aisystant.com) | Поисковые запросы. Данные пользователя не отправляются |
 | **GitHub** | github.com (США) | Содержимое репозиториев |
 
 ### Рекомендации по безопасности Mac
@@ -742,7 +760,7 @@ IWE работает преимущественно локально. Вот ч�
 <summary><b>Часто задаваемые вопросы</b></summary>
 
 **Нужна ли подписка Anthropic?**
-Да, Claude Code требует подписку Anthropic. Рекомендуется начать с **Claude Pro** ($20/мес). Если получите значительный эффект и упрётесь в лимиты — переходите на **Claude Max** (~$100/мес).
+Да, Claude Code требует подписку Anthropic. Рекомендуется начать с **Claude Pro** ($20/мес). При необходимости — **Claude Max** (~$100/мес).
 
 **Подойдут ли Qwen, Perplexity, ChatGPT (чат) или другие чат-боты?**
 Нет. Чат-боты и поисковые помощники (Qwen-чат, Perplexity, routerai.ru, обычный ChatGPT) **не подходят** — они не умеют читать/писать файлы на вашем компьютере и выполнять команды в терминале. Экзокортекс требует **агентного ИИ-ассистента** — такого, который работает с файловой системой, запускает команды и сохраняет контекст между сессиями.
@@ -768,7 +786,7 @@ IWE работает преимущественно локально. Вот ч�
 Pack — это предметная база знаний. Создаётся позже, когда накопишь достаточно captures. Первый шаг — работа с `captures.md` через Экстрактор.
 
 **Как проверить MCP?**
-Открой Claude Code в папке экзокортекса и набери `/mcp` — серверы должны быть Connected. Попроси: «Найди документы про принципы». Если серверов нет — добавь их через https://claude.ai/settings/connectors (см. шаг 1.3b).
+`/mcp` в Claude Code -- серверы должны быть Connected. Попроси: «Найди документы про принципы». Не работает? Запусти `bash FMT-exocortex-template/setup.sh --validate` -- покажет что именно сломано. Подробности -- см. шаг 1.3b.
 
 **Безопасны ли мои данные?**
 DS-strategy — приватный репо. MEMORY.md — локальный файл. Ничего не публикуется без твоего ведома. Подробности о том, что отправляется на внешние серверы (Claude API, WakaTime, GitHub) — см. раздел [Безопасность и приватность](#безопасность-и-приватность).
@@ -817,7 +835,7 @@ rm -rf ~/IWE/DS-strategy
 | [IWE-HELP.md](IWE-HELP.md) | Краткий справочник (FAQ, глоссарий) — то же, что знает бот |
 | [principles-vs-skills.md](principles-vs-skills.md) | Почему навыков недостаточно: принципы и генеративная иерархия |
 
-**В Pack (через MCP `knowledge-mcp search`):**
+**В Pack (через Gateway `knowledge_search`):**
 
 | Сущность | Что содержит |
 |----------|-------------|

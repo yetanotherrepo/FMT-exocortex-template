@@ -8,13 +8,10 @@ set -e
 # Флаг -s (system sleep) не используем — он НЕ работает на батарее (OBC может переключить профиль)
 caffeinate -diu -w $$ &
 
-# Fix file descriptor limit for launchd (default 256 is too low for Claude CLI)
-ulimit -n 2147483646 2>/dev/null || ulimit -n 10240 2>/dev/null || true
-
 # Конфигурация
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
-WORKSPACE="$HOME/Documents/IWE/DS-strategy"
+WORKSPACE="$HOME/IWE/DS-strategy"
 PROMPTS_DIR="$REPO_DIR/prompts"
 LOG_DIR="$HOME/logs/strategist"
 CLAUDE_PATH="/Users/ds/.local/bin/claude"
@@ -64,23 +61,17 @@ notify() {
 
 notify_telegram() {
     local scenario="$1"
-    "$HOME/Documents/IWE/DS-IT-systems/DS-ai-systems/synchronizer/scripts/notify.sh" strategist "$scenario" >> "$LOG_FILE" 2>&1 || true
+    local notify_script="$REPO_DIR/../synchronizer/scripts/notify.sh"
+    [ -f "$notify_script" ] && "$notify_script" strategist "$scenario" >> "$LOG_FILE" 2>&1 || true
 }
 
 run_claude() {
     local command_file="$1"
     local command_path="$PROMPTS_DIR/$command_file.md"
 
-    # Fallback: если промпт не в шаблоне, ищем в DS-strategy (user prompts)
     if [ ! -f "$command_path" ]; then
-        local ds_path="$WORKSPACE/roles/strategist/prompts/$command_file.md"
-        if [ -f "$ds_path" ]; then
-            command_path="$ds_path"
-            log "Using DS-strategy prompt: $ds_path"
-        else
-            log "ERROR: Command file not found: $command_path (also checked $ds_path)"
-            exit 1
-        fi
+        log "ERROR: Command file not found: $command_path"
+        exit 1
     fi
 
     # Читаем содержимое команды
@@ -108,9 +99,10 @@ ${prompt}"
 
     # Запуск Claude Code с содержимым команды как промпт (с timeout-защитой)
     local rc=0
-    CLAUDECODE="" timeout "$CLAUDE_TIMEOUT" "$CLAUDE_PATH" --dangerously-skip-permissions \
+    timeout "$CLAUDE_TIMEOUT" "$CLAUDE_PATH" --dangerously-skip-permissions \
+        --allowedTools "Read,Write,Edit,Glob,Grep,Bash" \
         -p "$prompt" \
-        2>&1 | tee -a "$LOG_FILE" || rc=${PIPESTATUS[0]}
+        >> "$LOG_FILE" 2>&1 || rc=$?
 
     if [ $rc -eq 124 ]; then
         log "WARN: Claude CLI timed out after ${CLAUDE_TIMEOUT}s for scenario: $command_file"
@@ -118,7 +110,11 @@ ${prompt}"
         log "WARN: Claude CLI exited with code $rc for scenario: $command_file"
     fi
 
-    log "Completed scenario: $command_file"
+    if [ $rc -eq 0 ]; then
+        log "SUCCESS scenario: $command_file"
+    else
+        log "FAILED scenario: $command_file (rc=$rc)"
+    fi
 
     # Push changes to GitHub (чтобы бот мог читать через API)
     if git -C "$WORKSPACE" diff --quiet origin/main..HEAD 2>/dev/null; then
@@ -137,27 +133,37 @@ ${prompt}"
     local summary
     summary=$(tail -5 "$LOG_FILE" | grep -v '^\[' | head -3)
     notify "Стратег: $command_file" "$summary"
+    return $rc
 }
 
 # Проверка: уже запускался ли сценарий сегодня
 already_ran_today() {
     local scenario="$1"
-    [ -f "$LOG_FILE" ] && grep -q "Completed scenario: $scenario" "$LOG_FILE"
+    [ -f "$LOG_FILE" ] && grep -q "SUCCESS scenario: $scenario" "$LOG_FILE"
 }
 
 # File-based lock to prevent concurrent execution (RunAtLoad + CalendarInterval race)
+# mkdir — атомарная операция на POSIX, исключает TOCTOU race condition
 LOCK_DIR="$LOG_DIR/locks"
 mkdir -p "$LOCK_DIR"
 
 acquire_lock() {
     local scenario="$1"
-    local lockfile="$LOCK_DIR/${scenario}.${DATE}.lock"
-    if ! mkdir "$lockfile" 2>/dev/null; then
-        log "SKIP: $scenario already running (lock exists: $lockfile)"
-        exit 2  # non-zero → scheduler won't mark_done
+    local lockdir="$LOCK_DIR/${scenario}.${DATE}.lck"
+    if ! mkdir "$lockdir" 2>/dev/null; then
+        local pid
+        pid=$(cat "$lockdir/pid" 2>/dev/null)
+        if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+            log "SKIP: $scenario already running (PID $pid)"
+            exit 2  # non-zero → scheduler won't mark_done
+        else
+            log "WARN: removing stale lock (PID $pid no longer exists): $lockdir"
+            rm -rf "$lockdir"
+            mkdir "$lockdir" || { log "ERROR: failed to acquire lock for $scenario"; exit 1; }
+        fi
     fi
-    # Auto-cleanup lock on exit
-    trap "rmdir '$lockfile' 2>/dev/null" EXIT
+    echo $$ > "$lockdir/pid" || { rm -rf "$lockdir"; log "ERROR: failed to write PID for $scenario"; exit 1; }
+    trap "rm -rf \"$lockdir\" 2>/dev/null" EXIT
 }
 
 # Читаем strategy_day из конфига (L4 Personal)
@@ -216,8 +222,9 @@ case "$1" in
         log "Sunday: running week review"
         run_claude "week-review"
         # Fallback push for Knowledge Index (week-review creates a post there)
+        # KI_REPO may not exist for all users — guard with [ -d ]
         KI_REPO="$HOME/IWE/DS-Knowledge-Index"
-        if git -C "$KI_REPO" log --oneline -1 --since="1 hour ago" --grep="week-review" 2>/dev/null | grep -q .; then
+        if [ -d "$KI_REPO/.git" ] && git -C "$KI_REPO" log --oneline -1 --since="1 hour ago" --grep="week-review" 2>/dev/null | grep -q .; then
             git -C "$KI_REPO" push >> "$LOG_FILE" 2>&1 && log "Pushed Knowledge Index (fallback)" || log "WARN: KI push failed"
         fi
         notify_telegram "week-review"
@@ -238,20 +245,23 @@ case "$1" in
         # Canary: count bold notes before (exclude 🔄 — deferred ideas stay bold by design)
         FLEETING="$WORKSPACE/inbox/fleeting-notes.md"
         BOLD_BEFORE=$(grep -c '^\*\*' "$FLEETING" 2>/dev/null || echo 0)
-        BOLD_NEW_BEFORE=$(grep '^\*\*' "$FLEETING" 2>/dev/null | grep -v '🔄' | grep -c '.' || echo 0)
+        BOLD_NEW_BEFORE=$(grep -vc '🔄' <(grep '^\*\*' "$FLEETING" 2>/dev/null) 2>/dev/null || echo 0)
         log "Canary: $BOLD_BEFORE bold total ($BOLD_NEW_BEFORE new, $(( BOLD_BEFORE - BOLD_NEW_BEFORE )) deferred 🔄)"
 
         run_claude "note-review"
 
-        # Canary: count bold notes after — only NEW bold (without 🔄) should decrease
+        # Canary: count bold notes after (needs to be visible for alert at line ~274)
         BOLD_AFTER=$(grep -c '^\*\*' "$FLEETING" 2>/dev/null || echo 0)
-        BOLD_NEW_AFTER=$(grep '^\*\*' "$FLEETING" 2>/dev/null | grep -v '🔄' | grep -c '.' || echo 0)
-        log "Canary: $BOLD_AFTER bold total ($BOLD_NEW_AFTER new)"
-        NON_BOLD=$(grep -c '^[^*#>-]' "$FLEETING" 2>/dev/null || echo 0)
-        log "Non-bold content lines: $NON_BOLD"
-        if [ "$BOLD_NEW_AFTER" -ge "$BOLD_NEW_BEFORE" ] && [ "$BOLD_NEW_BEFORE" -gt 0 ]; then
-            log "WARN: Note-Review Step 10 may have failed — new bold notes did not decrease ($BOLD_NEW_BEFORE → $BOLD_NEW_AFTER)"
-        fi
+        BOLD_NEW_AFTER=$(grep -vc '🔄' <(grep '^\*\*' "$FLEETING" 2>/dev/null) 2>/dev/null || echo 0)
+        # Non-blocking diagnostic (isolated from set -e to protect cleanup below)
+        (
+            log "Canary: $BOLD_AFTER bold total ($BOLD_NEW_AFTER new)"
+            NON_BOLD=$(grep -c '^[^*#>-]' "$FLEETING" 2>/dev/null || echo 0)
+            log "Non-bold content lines: $NON_BOLD"
+            if [ "$BOLD_NEW_AFTER" -ge "$BOLD_NEW_BEFORE" ] && [ "$BOLD_NEW_BEFORE" -gt 0 ]; then
+                log "WARN: Note-Review Step 10 may have failed — new bold notes did not decrease ($BOLD_NEW_BEFORE → $BOLD_NEW_AFTER)"
+            fi
+        ) || true
 
         # Deterministic cleanup: archive non-bold, non-🔄 notes (safety net for LLM Step 10)
         log "Running deterministic cleanup..."
