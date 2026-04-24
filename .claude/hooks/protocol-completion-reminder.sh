@@ -10,8 +10,9 @@ TOOL=$(echo "$INPUT" | jq -r '.tool_name // empty')
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
 SKILL_NAME=$(echo "$INPUT" | jq -r '.tool_input.skill // empty')
 
-# Срабатываем на чтение протоколов (Read protocol-*.md)
-if [ "$TOOL" = "Read" ] && echo "$FILE_PATH" | grep -q "protocol-"; then
+# Срабатываем ТОЛЬКО на чтение protocol-*.md (не .sh, не .py).
+# Раньше было "grep -q protocol-" — ловило protocol-artifact-validate.sh что неверно.
+if [ "$TOOL" = "Read" ] && echo "$FILE_PATH" | grep -qE '/memory/protocol-[^/]+\.md$'; then
   PROTOCOL_NAME=$(basename "$FILE_PATH" .md)
   jq -n --arg ctx "📝 ПРОТОКОЛ ЗАГРУЖЕН: $PROTOCOL_NAME. ОБЯЗАТЕЛЬНО: (1) Выполни ВСЕ шаги алгоритма. (2) После завершения запусти /verify для верификации по чеклисту (Haiku R23). НЕ пропускай верификацию." \
     '{hookSpecificOutput: {hookEventName: "PostToolUse", additionalContext: $ctx}}'

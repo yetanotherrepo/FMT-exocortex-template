@@ -113,6 +113,22 @@ if [ -n "$PREV_DAYPLAN" ] && [ "$PREV_DAYPLAN" != "$DAYPLAN" ]; then
   fi
 fi
 
+# --- Ф4 Check 6: DayPlan row reconciliation (каждая строка имеет terminal status) ---
+# Срабатывает только при day-close commit — не блокирует ежедневные коммиты DayPlan
+# во время работы (когда строки ещё pending).
+if echo "$TOOL_INPUT" | grep -qiE 'day.?close|close.?day|итоги дня'; then
+  ROW_CHECK_SCRIPT="${IWE_WORKSPACE:-$HOME/IWE}/FMT-exocortex-template/scripts/check-dayplan-rows.py"
+  if [ -x "$ROW_CHECK_SCRIPT" ] || [ -f "$ROW_CHECK_SCRIPT" ]; then
+    ROW_OUTPUT=$(python3 "$ROW_CHECK_SCRIPT" "$DAYPLAN" 2>&1)
+    ROW_EXIT=$?
+    if [ "$ROW_EXIT" = "2" ]; then
+      # Выжать список unresolved rows из output
+      UNRESOLVED=$(echo "$ROW_OUTPUT" | grep -E "^\s+Line " | head -10 | tr '\n' ' ')
+      ERRORS+=("Есть rows БЕЗ terminal status (pending/unresolved): $UNRESOLVED → resolve каждую ДО day-close commit (done/carry W{N+1}/blocked/dropped/delegated)")
+    fi
+  fi
+fi
+
 # Report results
 if [ ${#MISSING[@]} -gt 0 ] || [ ${#ERRORS[@]} -gt 0 ]; then
   MISSING_STR=$(printf ', %s' "${MISSING[@]}")

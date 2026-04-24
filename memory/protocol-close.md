@@ -11,6 +11,25 @@ originSessionId: b5655b53-7d87-478a-aad9-437479e81691
 > **Точка входа:** Вызвать Skill `run-protocol` с нужным аргументом (см. таблицу ниже).
 > **Принцип:** Quick Close = «не потерять» (inline, без TodoWrite, ~3 мин). Day/Week Close = через SKILL.md + TodoWrite (принудительное исполнение).
 
+## Контракт Day Close (БЛОКИРУЮЩЕЕ)
+
+**Правило:** day-close commit разрешён ТОЛЬКО если **каждая строка** DayPlan имеет terminal status:
+- `done` (с результатом)
+- `delegated` (кому, handoff артефакт)
+- `blocked` (причина)
+- `carry W{N+1}` (что именно в следующий период)
+- `dropped` (причина снятия)
+
+**НЕ terminal:** raw `pending` / traffic-light 🔴🟡🟢⚫ / empty cell / unresolved.
+
+**User statement ≠ row-level evidence:** фраза «всё по плану» — это summary claim, не доказательство по каждой строке. Обязательна artefact-grounded reconciliation каждой строки.
+
+**Validator:** `FMT-exocortex-template/scripts/check-dayplan-rows.py`. Вызывается:
+- В Pre-flight (Step 0 в `extensions/day-close.after.md`) — до коммитов
+- В `protocol-artifact-validate.sh` hook — блокирует commit с day-close если exit 2
+
+---
+
 ## Маршрутизация
 
 | Триггер | Аргумент | Skill |
