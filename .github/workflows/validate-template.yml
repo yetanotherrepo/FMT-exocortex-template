@@ -88,7 +88,8 @@ jobs:
 
       # 2. Нет захардкоженных /Users/ и /opt/homebrew путей
       # Исключения зеркалят setup/validate-template.sh (локальный валидатор):
-      #   /Users/  — validate-template.{yml,sh}, setup.sh (примеры), /Users/.../ placeholder, комментарии-примеры
+      #   /Users/  — validate-template.{yml,sh}, setup.sh (примеры), /Users/.../ placeholder, комментарии-примеры,
+      #              санкционированные авторские маркеры подстановки `/Users/ds{/,<,$}` (см. setup.sh §1).
       #   /opt/homebrew — README, PLATFORM-COMPAT.md, validate-template.{yml,sh}, setup.sh, plist PATH
       - name: Check for hardcoded paths
         run: |
@@ -101,6 +102,7 @@ jobs:
                   | grep -v '/Users/\.\.\./' \
                   | grep -v '# .*\(/Users/\|e\.g\.\)' \
                   | grep -v 'CHANGELOG.md' \
+                  | grep -vE '/Users/ds($|/|<)' \
                   | wc -l)
           if [ "$count" -gt 0 ]; then
             echo "FAIL: Found /Users/ in $count locations:"
@@ -110,7 +112,8 @@ jobs:
                 --exclude='setup.sh' 2>/dev/null \
                 | grep -v '/Users/\.\.\./' \
                 | grep -v '# .*\(/Users/\|e\.g\.\)' \
-                | grep -v 'CHANGELOG.md' | head -5
+                | grep -v 'CHANGELOG.md' \
+                | grep -vE '/Users/ds($|/|<)' | head -5
             FAIL=1
           fi
 
