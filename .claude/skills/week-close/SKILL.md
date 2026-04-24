@@ -14,20 +14,15 @@ version: 1.1.0
 
 ## Платформенные шаги (выполняются всегда)
 
-### Бэкап IWE в iCloud
-
-> Условный шаг: только macOS с iCloud Drive.
-
-```bash
-/Users/ds/IWE/scripts/backup-icloud.sh
-```
-
-Архив всех файлов IWE (без `.git`, `node_modules`, `.venv`) → iCloud Drive. Хранит 4 последних архива.
-
 ### Скан незакоммиченных файлов
 
+> Скрипт лежит в FMT-exocortex-template. Использует `$IWE_WORKSPACE` env var
+> (должен быть set в окружении на реальный path IWE, включая non-стандартные
+> пути типа `~/Documents/IWE`). Fallback на `~/IWE` для стандартной установки.
+
 ```bash
-/Users/ds/IWE/scripts/check-dirty-repos.sh
+IWE="${IWE_WORKSPACE:-$HOME/IWE}"
+WORKSPACE_DIR="$IWE" bash "$IWE/FMT-exocortex-template/scripts/check-dirty-repos.sh"
 ```
 
 Если есть грязные репо → закоммитить и запушить ДО завершения Week Close.
