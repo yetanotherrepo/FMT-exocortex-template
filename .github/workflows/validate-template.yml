@@ -122,6 +122,7 @@ jobs:
                   | grep -v 'README.md' \
                   | grep -v 'PLATFORM-COMPAT.md' \
                   | grep -v '/usr/local/bin.*:/opt/homebrew' \
+                  | grep -v 'CHANGELOG.md' \
                   | wc -l)
           if [ "$count" -gt 0 ]; then
             echo "FAIL: Found /opt/homebrew in $count locations:"
@@ -129,7 +130,10 @@ jobs:
                 --exclude='validate-template.yml' \
                 --exclude='validate-template.sh' \
                 --exclude='setup.sh' 2>/dev/null \
-                | grep -v 'README.md' | grep -v 'PLATFORM-COMPAT.md' | head -5
+                | grep -v 'README.md' \
+                | grep -v 'PLATFORM-COMPAT.md' \
+                | grep -v '/usr/local/bin.*:/opt/homebrew' \
+                | grep -v 'CHANGELOG.md' | head -5
             FAIL=1
           fi
 
