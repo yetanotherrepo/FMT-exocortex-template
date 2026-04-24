@@ -138,12 +138,7 @@ Temporal metadata: `valid_from: YYYY-MM-DD` (обязательно при со�
 
 ### Именование
 
-<<<<<<< /var/folders/vj/4blm317s2w5cgv274f96xbn00000gn/T/tmp.cgGKvUOvII/claude-merge.md
-- `DS-strategy` (не `DS-strategy`) — личный governance-хаб
-- `/Users/ds/IWE/` — рабочая директория
-=======
-- `/Users/ds/IWE/` — рабочая директория
->>>>>>> /var/folders/vj/4blm317s2w5cgv274f96xbn00000gn/T/tmp.cgGKvUOvII/files/CLAUDE.md
+> Добавьте сюда имена своих ключевых репо и путей (пример: `- {{WORKSPACE_DIR}} — рабочая директория`).
 
 ### Read-only репо
 
