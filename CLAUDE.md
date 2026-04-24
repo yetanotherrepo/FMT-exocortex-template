@@ -134,13 +134,16 @@ Temporal metadata: `valid_from: YYYY-MM-DD` (обязательно при со�
 ### Различения (авторские)
 
 > Хранятся в `.claude/rules/distinctions.md` в зоне AUTHOR-ONLY — не затираются при `update.sh`.
-
-- **Бот = интерфейс (слой 3), не место агентов.** Портной, Оценщик, Оркестратор живут на платформе (L2, stateless AI). Бот — тонкий клиент. Код в `engines/tailor/` = случайность реализации, не архитектурное решение.
+> Добавляйте сюда свои авторские различения (пара терминов, путаница которых ведёт к ошибке).
 
 ### Именование
 
+<<<<<<< /var/folders/vj/4blm317s2w5cgv274f96xbn00000gn/T/tmp.cgGKvUOvII/claude-merge.md
 - `DS-strategy` (не `DS-strategy`) — личный governance-хаб
 - `/Users/ds/IWE/` — рабочая директория
+=======
+- `/Users/ds/IWE/` — рабочая директория
+>>>>>>> /var/folders/vj/4blm317s2w5cgv274f96xbn00000gn/T/tmp.cgGKvUOvII/files/CLAUDE.md
 
 ### Read-only репо
 

@@ -22,7 +22,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/wp-gate-reminder.sh\""
+            "command": ".claude/hooks/wp-gate-reminder.sh"
           }
         ]
       },
@@ -30,18 +30,27 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/close-gate-reminder.sh\""
+            "command": ".claude/hooks/close-gate-reminder.sh"
           }
         ]
       }
     ],
     "PreToolUse": [
       {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/extensions-gate.sh"
+          }
+        ]
+      },
+      {
         "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/protocol-artifact-validate.sh\""
+            "command": ".claude/hooks/protocol-artifact-validate.sh"
           }
         ]
       }
@@ -52,7 +61,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/protocol-completion-reminder.sh\""
+            "command": ".claude/hooks/protocol-completion-reminder.sh"
           }
         ]
       }
@@ -62,7 +71,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/protocol-stop-gate.sh\""
+            "command": ".claude/hooks/protocol-stop-gate.sh"
           }
         ]
       }
@@ -72,7 +81,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/precompact-checkpoint.sh\""
+            "command": ".claude/hooks/precompact-checkpoint.sh"
           }
         ]
       }
