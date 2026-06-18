@@ -8,14 +8,14 @@ name: IWE Cloud Scheduler (базовый)
 # Для пользователей шаблона FMT-exocortex-template.
 # Подробности: DP.SC.019 (PACK-digital-platform/08-service-clauses/)
 #
-# Настройка:
+# Workflow intentionally manual-only in this template repo: scheduled runs are
+# disabled to avoid GitHub inactivity warnings for unconfigured forks/templates.
+#
+# Настройка ручного запуска:
 # 1. Создайте GitHub Secret: STRATEGY_REPO_TOKEN (PAT с доступом к DS-strategy)
 # 2. Укажите STRATEGY_REPO в env ниже (ваш DS-strategy репо)
 
 on:
-  schedule:
-    # 01:00 UTC (04:00 MSK) — ночной цикл
-    - cron: '0 1 * * *'
   workflow_dispatch:
     inputs:
       task:
@@ -41,7 +41,6 @@ jobs:
     name: Backup memory → exocortex
     runs-on: ubuntu-latest
     if: >-
-      github.event_name == 'schedule' ||
       github.event.inputs.task == 'all' ||
       github.event.inputs.task == 'backup'
     steps:
@@ -98,7 +97,6 @@ jobs:
     name: Health check (ночная автоматика)
     runs-on: ubuntu-latest
     if: >-
-      github.event_name == 'schedule' ||
       github.event.inputs.task == 'all' ||
       github.event.inputs.task == 'health-check'
     steps:
